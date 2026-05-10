@@ -60,7 +60,10 @@ InjurySchema.index({ playerId: 1 });
 InjurySchema.index({ status: 1 });
 InjurySchema.index({ playerId: 1, status: 1 });
 
-// Zabezpieczenie przed ponownym tworzeniem modelu w Next.js
-const Injury = models.Injury || model<IInjury>('Injury', InjurySchema);
+// Zabezpieczenie przed ponownym tworzeniem modelu w Next.js - przy każdym imporcie
+let Injury = models.Injury;
+if (!Injury) {
+  Injury = model<IInjury>('Injury', InjurySchema);
+}
 
 export default Injury;

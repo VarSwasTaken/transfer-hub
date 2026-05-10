@@ -58,20 +58,33 @@ export async function getPlayerProfile(playerId: number): Promise<PlayerProfileR
 
     const [injuryDocs, valuationDocs] = await Promise.all([Injury.find({ playerId }).sort({ startDate: -1 }).limit(10).exec(), PlayerValuation.find({ playerId }).sort({ year: -1, month: -1 }).limit(240).exec()]);
 
-    const injuries = injuryDocs.map((doc) => ({
-      id: doc.id,
-      type: doc.type,
-      severity: doc.severity,
-      status: doc.status,
-      startDate: doc.startDate?.toISOString() ?? null,
-      expectedReturnDate: doc.expectedReturnDate?.toISOString() ?? null,
-      actualReturnDate: doc.actualReturnDate?.toISOString() ?? null,
-      description: doc.description ?? null,
-      treatment: doc.treatment ?? null,
-      reportedBy: doc.reportedBy ?? null,
-      createdAt: doc.createdAt?.toISOString() ?? null,
-      updatedAt: doc.updatedAt?.toISOString() ?? null,
-    }));
+    const injuries = injuryDocs.map((doc) => {
+      const injuryData = doc.toObject ? doc.toObject() : doc;
+      console.log('🔍 Injury doc from MongoDB:', {
+        id: doc.id,
+        type_PL: doc.type_PL,
+        type_EN: doc.type_EN,
+        type: (injuryData as Record<string, unknown>).type,
+        severity: doc.severity,
+      });
+      return {
+        id: doc.id,
+        type_PL: doc.type_PL ?? ((injuryData as Record<string, unknown>).type as string) ?? 'Unknown',
+        type_EN: doc.type_EN ?? ((injuryData as Record<string, unknown>).type as string) ?? 'Unknown',
+        severity: doc.severity,
+        status: doc.status,
+        startDate: doc.startDate?.toISOString() ?? null,
+        expectedReturnDate: doc.expectedReturnDate?.toISOString() ?? null,
+        actualReturnDate: doc.actualReturnDate?.toISOString() ?? null,
+        description_PL: doc.description_PL ?? null,
+        description_EN: doc.description_EN ?? null,
+        treatment_PL: doc.treatment_PL ?? null,
+        treatment_EN: doc.treatment_EN ?? null,
+        reportedBy: doc.reportedBy ?? null,
+        createdAt: doc.createdAt?.toISOString() ?? null,
+        updatedAt: doc.updatedAt?.toISOString() ?? null,
+      };
+    });
 
     const valuations = valuationDocs.map((doc) => ({
       year: doc.year,
@@ -85,7 +98,7 @@ export async function getPlayerProfile(playerId: number): Promise<PlayerProfileR
     return { injuries, valuations };
   })();
 
-  const noSqlResult = await Promise.race([noSqlTask.then((items) => ({ kind: 'ok' as const, items })), noSqlTask.catch((error) => ({ kind: 'error' as const, error })), new Promise<{ kind: 'timeout' }>((resolve) => setTimeout(() => resolve({ kind: 'timeout' }), NOSQL_TIMEOUT_MS))]);
+  const noSqlResult = (await Promise.race([noSqlTask.then((items) => ({ kind: 'ok' as const, items })), noSqlTask.catch((error) => ({ kind: 'error' as const, error })), new Promise<{ kind: 'timeout' }>((resolve) => setTimeout(() => resolve({ kind: 'timeout' }), NOSQL_TIMEOUT_MS))])) as { kind: 'ok'; items: { injuries: Array<Record<string, unknown>>; valuations: Array<Record<string, unknown>> } } | { kind: 'error'; error: unknown } | { kind: 'timeout' };
 
   const injuries: Array<Record<string, unknown>> = noSqlResult.kind === 'ok' ? noSqlResult.items.injuries : [];
   const valuations: Array<Record<string, unknown>> = noSqlResult.kind === 'ok' ? noSqlResult.items.valuations : [];

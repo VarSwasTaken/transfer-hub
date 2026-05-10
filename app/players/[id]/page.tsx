@@ -28,11 +28,16 @@ type PlayerProfileData = {
   }>;
   injuries: Array<{
     id: string;
-    type: string;
+    type_PL: string;
+    type_EN: string;
     severity: 'Lekka' | 'Średnia' | 'Poważna' | 'Krytyczna';
     startDate: string;
     expectedReturnDate: string | null;
     actualReturnDate: string | null;
+    description_PL: string | null;
+    description_EN: string | null;
+    treatment_PL: string | null;
+    treatment_EN: string | null;
   }>;
   valuations: Array<{ year: number; month: number; value: number; currency?: string }>;
 };

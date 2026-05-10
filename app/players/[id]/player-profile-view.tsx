@@ -37,11 +37,16 @@ type PlayerProfileData = {
   }>;
   injuries: Array<{
     id: string;
-    type: string;
+    type_PL: string;
+    type_EN: string;
     severity: 'Lekka' | 'Średnia' | 'Poważna' | 'Krytyczna';
     startDate: string;
     expectedReturnDate: string | null;
     actualReturnDate: string | null;
+    description_PL: string | null;
+    description_EN: string | null;
+    treatment_PL: string | null;
+    treatment_EN: string | null;
   }>;
   valuations: Array<{ year: number; month: number; value: number; currency?: string }>;
 };
@@ -369,10 +374,12 @@ export function PlayerProfileView({ player }: { player: PlayerProfileData | null
                 {player.injuries.map((injury) => (
                   <div key={injury.id} className="flex items-center gap-4 px-6 py-3.5">
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-foreground">{injury.type}</p>
+                      <p className="text-sm font-medium text-foreground">{language === 'pl' ? injury.type_PL || injury.type_EN || 'Unknown' : injury.type_EN || injury.type_PL || 'Unknown'}</p>
                       <p className="mt-0.5 text-xs text-muted-foreground">
                         {formatDate(injury.startDate, language)} &ndash; {injury.actualReturnDate ? formatDate(injury.actualReturnDate, language) : injury.expectedReturnDate ? formatDate(injury.expectedReturnDate, language) : t.noReturnDate}
                       </p>
+                      {(language === 'pl' ? injury.description_PL : injury.description_EN) && <p className="mt-1.5 text-xs text-muted-foreground">{language === 'pl' ? injury.description_PL : injury.description_EN}</p>}
+                      {(language === 'pl' ? injury.treatment_PL : injury.treatment_EN) && <p className="mt-1 text-xs text-muted-foreground italic">{language === 'pl' ? injury.treatment_PL : injury.treatment_EN}</p>}
                     </div>
                     <Badge variant="outline" className={`shrink-0 px-1.5 py-0 text-[10px] ${severityConfig[injury.severity].className}`}>
                       {severityConfig[injury.severity].label}

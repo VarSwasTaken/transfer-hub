@@ -21,6 +21,20 @@ async function seedNoSQL() {
   await PlayerValuation.deleteMany({});
 
   // Lista zawodników, dla których chcemy mieć dane medyczne NoSQL
+  const injuryTypeMap: Record<string, { pl: string; en: string }> = {
+    'Przeciążenie pleców': { pl: 'Przeciążenie pleców', en: 'Back strain' },
+    'Uraz mięśniowy': { pl: 'Uraz mięśniowy', en: 'Muscle strain' },
+    'Uraz stopy': { pl: 'Uraz stopy', en: 'Foot injury' },
+    'Zerwanie ścięgna': { pl: 'Zerwanie ścięgna', en: 'Tendon rupture' },
+    'Uraz uda': { pl: 'Uraz uda', en: 'Thigh injury' },
+    'Naciągnięcie łydki': { pl: 'Naciągnięcie łydki', en: 'Calf strain' },
+    'Skręcenie kostki': { pl: 'Skręcenie kostki', en: 'Ankle sprain' },
+    'Stłuczenie kolana': { pl: 'Stłuczenie kolana', en: 'Knee contusion' },
+    'Przeciążenie mięśnia dwugłowego': { pl: 'Przeciążenie mięśnia dwugłowego', en: 'Biceps strain' },
+    'Uraz więzadła pobocznego': { pl: 'Uraz więzadła pobocznego', en: 'Ligament injury' },
+    'Mikrouraz dwugłowego uda': { pl: 'Mikrouraz dwugłowego uda', en: 'Hamstring micro-tear' },
+  };
+
   const injuriesData = [
     {
       firstName: 'Robert',
@@ -90,13 +104,17 @@ async function seedNoSQL() {
       const start = new Date();
       start.setDate(start.getDate() - data.injury.days);
 
+      const injuryTypeData = injuryTypeMap[data.injury.type] || { pl: data.injury.type, en: data.injury.type };
+
       await Injury.create({
         playerId: player.id,
-        type: data.injury.type,
+        type_PL: injuryTypeData.pl,
+        type_EN: injuryTypeData.en,
         severity: data.injury.severity,
         startDate: start,
         status: data.injury.status,
-        description: `Automatyczny raport medyczny: ${data.injury.type}.`,
+        description_PL: `Automatyczny raport medyczny: ${injuryTypeData.pl}.`,
+        description_EN: `Automatic medical report: ${injuryTypeData.en}.`,
       });
     }
   }
@@ -241,7 +259,8 @@ async function seedNoSQL() {
       contractYears: data.rumor.contractYears,
       currency: data.rumor.currency,
       links: data.rumor.links,
-      notes: data.rumor.notes,
+      notes_PL: data.rumor.notes,
+      notes_EN: data.rumor.notes,
       publishedAt,
       expiresAt,
     });

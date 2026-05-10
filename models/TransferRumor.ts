@@ -14,7 +14,8 @@ export interface ITransferRumor extends Document {
   contractYears?: number;
   currency: string;
   links: string[];
-  notes?: string;
+  notes_PL?: string;
+  notes_EN?: string;
   publishedAt: Date;
   expiresAt?: Date;
   createdAt: Date;
@@ -51,11 +52,12 @@ const TransferRumorSchema = new Schema(
     currency: { type: String, default: 'EUR', trim: true, uppercase: true },
 
     links: { type: [String], default: [] },
-    notes: { type: String },
+    notes_PL: { type: String },
+    notes_EN: { type: String },
     publishedAt: { type: Date, default: Date.now },
     expiresAt: { type: Date },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 TransferRumorSchema.index({ playerId: 1, status: 1 });
@@ -63,7 +65,6 @@ TransferRumorSchema.index({ toClubId: 1, status: 1 });
 TransferRumorSchema.index({ credibility: 1, publishedAt: -1 });
 TransferRumorSchema.index({ publishedAt: -1 });
 
-const TransferRumor =
-  models.TransferRumor || model<ITransferRumor>('TransferRumor', TransferRumorSchema);
+const TransferRumor = models.TransferRumor || model<ITransferRumor>('TransferRumor', TransferRumorSchema);
 
 export default TransferRumor;
