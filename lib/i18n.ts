@@ -1,3 +1,5 @@
+import translations from './translations.json';
+
 export type Language = 'pl' | 'en';
 
 const SUPPORTED_LANGUAGES: Language[] = ['pl', 'en'];
@@ -14,4 +16,8 @@ export function pickLocalizedName(language: Language, value: { name: string; nam
     return value.namePL?.trim() || value.name;
   }
   return value.name;
+}
+
+export function getTranslations(language: Language) {
+  return translations[language];
 }

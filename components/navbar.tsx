@@ -173,6 +173,8 @@ export function Navbar() {
     localStorage.setItem('ui-language', nextLanguage);
     document.documentElement.lang = nextLanguage;
     document.cookie = `ui-language=${nextLanguage}; path=/; max-age=31536000; samesite=lax`;
+    // Emit event dla client components
+    window.dispatchEvent(new Event('language-changed'));
   }
 
   const loginLabel = language === 'pl' ? 'Zaloguj się' : 'Log in';
