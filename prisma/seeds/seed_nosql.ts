@@ -4,6 +4,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import mongoose from 'mongoose';
 import Injury from '../../models/Injury';
 import TransferRumor from '../../models/TransferRumor';
+import PlayerValuation from '../../models/PlayerValuation';
 import 'dotenv/config';
 
 const connectionString = `${process.env.DATABASE_URL}`;
@@ -17,6 +18,7 @@ async function seedNoSQL() {
 
   await Injury.deleteMany({});
   await TransferRumor.deleteMany({});
+  await PlayerValuation.deleteMany({});
 
   // Lista zawodników, dla których chcemy mieć dane medyczne NoSQL
   const injuriesData = [
@@ -243,6 +245,59 @@ async function seedNoSQL() {
       publishedAt,
       expiresAt,
     });
+  }
+
+  // --- Player valuations (NoSQL) ---
+  const valuationsData = [
+    {
+      firstName: 'Robert',
+      lastName: 'Lewandowski',
+      valuations: [
+        { year: 2024, month: 6, value: 30000000 },
+        { year: 2025, month: 1, value: 32000000 },
+      ],
+    },
+    {
+      firstName: 'Erling',
+      lastName: 'Haaland',
+      valuations: [
+        { year: 2024, month: 8, value: 170000000 },
+        { year: 2025, month: 3, value: 180000000 },
+      ],
+    },
+    {
+      firstName: 'Lamine',
+      lastName: 'Yamal',
+      valuations: [
+        { year: 2024, month: 9, value: 45000000 },
+        { year: 2025, month: 2, value: 60000000 },
+      ],
+    },
+  ];
+
+  for (const entry of valuationsData) {
+    const player = await prisma.player.findFirst({
+      where: { firstName: entry.firstName, lastName: entry.lastName },
+      select: { id: true, firstName: true, lastName: true },
+    });
+
+    if (!player) continue;
+
+    console.log(`💰 Generowanie historycznych wycen dla: ${player.firstName} ${player.lastName}`);
+
+    for (const val of entry.valuations) {
+      try {
+        await PlayerValuation.create({
+          playerId: player.id,
+          year: val.year,
+          month: val.month,
+          value: val.value,
+          currency: 'EUR',
+        });
+      } catch (e) {
+        // ignorujemy duplikaty lub błędy podczas seedowania
+      }
+    }
   }
 
   console.log('✅ MongoDB Atlas zostało wypełnione danymi medycznymi i plotkami transferowymi NoSQL!');
