@@ -1,4 +1,6 @@
 import { prisma } from '@/lib/prisma';
+import { connectToDatabase } from '@/lib/mongoose';
+import ClubValuation from '@/models/ClubValuation';
 
 type ClubProfileResult = {
   data: Record<string, unknown> | null;
@@ -71,6 +73,36 @@ export async function getClubProfile(clubId: number): Promise<ClubProfileResult>
   const totalMarketValue = club.players.reduce((sum, player) => sum + (player.marketValue?.toNumber() ?? 0), 0);
   const avgMarketValue = club.players.length > 0 ? totalMarketValue / club.players.length : 0;
 
+  // Squad value history (from ClubValuation for past years + current year from marketValue sum)
+  let squadValueHistory: Array<{ year: number; value: number }> = [];
+  try {
+    await connectToDatabase();
+    const currentYear = new Date().getFullYear();
+
+    // Get historical club valuations from MongoDB (all years)
+    const clubVals = await ClubValuation.find({ clubId }).sort({ year: 1 });
+
+    // Build map: year -> value
+    const valuesByYear = new Map<number, number>();
+    for (const cv of clubVals) {
+      valuesByYear.set(cv.year, Math.round(cv.value / 1_000_000)); // Convert to millions
+    }
+
+    // For current year, use sum of player marketValue from Supabase
+    const currentYearSum = club.players.reduce((sum, player) => sum + (player.marketValue?.toNumber() ?? 0), 0);
+    if (currentYearSum > 0) {
+      valuesByYear.set(currentYear, Math.round(currentYearSum / 1_000_000));
+    }
+
+    // Convert to sorted array
+    squadValueHistory = Array.from(valuesByYear.entries())
+      .map(([year, value]) => ({ year, value }))
+      .sort((a, b) => a.year - b.year);
+  } catch {
+    // silent - keep squadValueHistory empty and return warnings
+    warnings.push('Unable to load squad value history from NoSQL.');
+  }
+
   return {
     data: {
       id: club.id,
@@ -122,6 +154,7 @@ export async function getClubProfile(clubId: number): Promise<ClubProfileResult>
             }
           : null,
       })),
+      squadValueHistory,
       transfersIn: club.transfersIn.map((transfer) => ({
         id: transfer.id,
         player: {

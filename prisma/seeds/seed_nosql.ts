@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import Injury from '../../models/Injury';
 import TransferRumor from '../../models/TransferRumor';
 import PlayerValuation from '../../models/PlayerValuation';
+import ClubValuation from '../../models/ClubValuation';
 import 'dotenv/config';
 
 const connectionString = `${process.env.DATABASE_URL}`;
@@ -19,6 +20,7 @@ async function seedNoSQL() {
   await Injury.deleteMany({});
   await TransferRumor.deleteMany({});
   await PlayerValuation.deleteMany({});
+  await ClubValuation.deleteMany({});
 
   // Lista zawodników, dla których chcemy mieć dane medyczne NoSQL
   const injuryTypeMap: Record<string, { pl: string; en: string }> = {
@@ -324,6 +326,58 @@ async function seedNoSQL() {
         });
       } catch (e) {
         // ignorujemy duplikaty lub błędy podczas seedowania
+      }
+    }
+  }
+
+  // --- Club valuations (aggregate sum of player valuations per club per year) ---
+  const allClubs = await prisma.club.findMany({
+    select: { id: true, name: true },
+  });
+
+  for (const club of allClubs) {
+    // Get all players in this club
+    const clubPlayers = await prisma.player.findMany({
+      where: { clubId: club.id },
+      select: { id: true },
+    });
+
+    if (clubPlayers.length === 0) continue;
+
+    const playerIds = clubPlayers.map((p) => p.id);
+
+    // Get all years from PlayerValuation for these players
+    const playerVals = await PlayerValuation.find({ playerId: { $in: playerIds } });
+
+    // Group by year and sum
+    const valuesByYear = new Map<number, number>();
+    for (const pv of playerVals) {
+      const current = valuesByYear.get(pv.year) || 0;
+      valuesByYear.set(pv.year, current + pv.value);
+    }
+
+    // Also include current year from Prisma marketValue
+    const currentYear = new Date().getFullYear();
+    const clubPlayersSql = await prisma.player.findMany({
+      where: { clubId: club.id },
+      select: { marketValue: true },
+    });
+    const currentYearValue = clubPlayersSql.reduce((sum, p) => sum + (p.marketValue?.toNumber() ?? 0), 0);
+    if (currentYearValue > 0) {
+      valuesByYear.set(currentYear, currentYearValue);
+    }
+
+    // Create ClubValuation records
+    for (const [year, value] of valuesByYear.entries()) {
+      try {
+        await ClubValuation.create({
+          clubId: club.id,
+          year,
+          value,
+          currency: 'EUR',
+        });
+      } catch (e) {
+        // ignorujemy duplikaty
       }
     }
   }

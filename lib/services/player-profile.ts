@@ -60,13 +60,6 @@ export async function getPlayerProfile(playerId: number): Promise<PlayerProfileR
 
     const injuries = injuryDocs.map((doc) => {
       const injuryData = doc.toObject ? doc.toObject() : doc;
-      console.log('🔍 Injury doc from MongoDB:', {
-        id: doc.id,
-        type_PL: doc.type_PL,
-        type_EN: doc.type_EN,
-        type: (injuryData as Record<string, unknown>).type,
-        severity: doc.severity,
-      });
       return {
         id: doc.id,
         type_PL: doc.type_PL ?? ((injuryData as Record<string, unknown>).type as string) ?? 'Unknown',

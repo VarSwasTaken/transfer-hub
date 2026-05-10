@@ -5,22 +5,18 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Language } from '@/lib/i18n';
 
-const data = [
-  { year: '2019', value: 320 },
-  { year: '2020', value: 355 },
-  { year: '2021', value: 402 },
-  { year: '2022', value: 468 },
-  { year: '2023', value: 515 },
-  { year: '2024', value: 562 },
-  { year: '2025', value: 608 },
-];
-
-export function SquadValueChart({ language = 'pl' }: { language?: Language }) {
+export function SquadValueChart({ language = 'pl', valuations = [] }: { language?: Language; valuations?: Array<{ year: number; value: number }> }) {
+  const data = (valuations ?? []).map((v) => ({ year: String(v.year), value: v.value }));
   const title = language === 'pl' ? 'Historia wartości składu' : 'Squad value history';
   const subtitle = language === 'pl' ? 'Wartość w milionach EUR' : 'Value in million EUR';
   const delta = language === 'pl' ? '+8.2% vs zeszły rok' : '+8.2% vs last year';
   const tooltipSeries = language === 'pl' ? 'Wartość składu' : 'Squad value';
   const tooltipUnit = language === 'pl' ? 'mln' : 'M';
+
+  // compute display numbers
+  const latest = data.length > 0 ? data[data.length - 1].value : 0;
+  const prev = data.length > 1 ? data[data.length - 2].value : 0;
+  const deltaPct = prev > 0 ? Math.round(((latest - prev) / prev) * 1000) / 10 : 0;
 
   return (
     <Card className="border-border/40 bg-card/50">
@@ -31,8 +27,8 @@ export function SquadValueChart({ language = 'pl' }: { language?: Language }) {
             <CardDescription className="mt-1 text-xs">{subtitle}</CardDescription>
           </div>
           <div className="text-right">
-            <p className="text-2xl font-bold text-emerald-400">608 mln €</p>
-            <p className="mt-0.5 text-xs text-emerald-400">{delta}</p>
+            <p className="text-2xl font-bold text-emerald-400">{latest} mln €</p>
+            <p className="mt-0.5 text-xs text-emerald-400">{deltaPct >= 0 ? `+${deltaPct}% vs last year` : `${deltaPct}% vs last year`}</p>
           </div>
         </div>
       </CardHeader>
@@ -55,7 +51,8 @@ export function SquadValueChart({ language = 'pl' }: { language?: Language }) {
                 return [`${numericValue} ${tooltipUnit}`, tooltipSeries];
               }}
             />
-            <ReferenceLine y={560} stroke="rgba(255,255,255,0.1)" strokeDasharray="4 4" />
+            {/** optional reference line at latest value */}
+            {latest > 0 && <ReferenceLine y={latest} stroke="rgba(255,255,255,0.06)" strokeDasharray="4 4" />}
             <Line type="monotone" dataKey="value" stroke="#10b981" strokeWidth={2.5} dot={{ fill: '#10b981', r: 4, strokeWidth: 0 }} activeDot={{ r: 6, fill: '#10b981' }} />
           </LineChart>
         </ResponsiveContainer>

@@ -32,6 +32,7 @@ type ClubProfileData = {
     totalMarketValue: string;
     avgMarketValue: string;
   };
+  squadValueHistory?: Array<{ year: number; value: number }>;
   players: Array<{
     id: number;
     firstName: string;
@@ -252,7 +253,6 @@ export default async function ClubProfilePage({ params }: { params: Promise<{ id
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
       <main className="mx-auto max-w-7xl px-4 py-8">
         <div className="mb-8 rounded-xl border border-border/40 bg-card/50 p-6">
           <div className="flex flex-col items-start gap-6 sm:flex-row">
@@ -508,7 +508,7 @@ export default async function ClubProfilePage({ params }: { params: Promise<{ id
           </div>
 
           <div className="flex flex-col gap-6">
-            <SquadValueChart language={language} />
+            <SquadValueChart language={language} valuations={club.squadValueHistory ?? []} />
 
             <Card className="border-border/40 bg-card/50">
               <CardHeader className="pb-2">
@@ -536,11 +536,7 @@ export default async function ClubProfilePage({ params }: { params: Promise<{ id
         </div>
       </main>
 
-      <footer className="mt-12 border-t border-border/40">
-        <div className="mx-auto max-w-7xl px-4 py-6">
-          <p className="text-center text-sm text-muted-foreground">&copy; 2026 TransferHub &mdash; Projekt baz danych</p>
-        </div>
-      </footer>
+      {/* Footer provided by app/layout.tsx */}
     </div>
   );
 }
