@@ -46,6 +46,7 @@ type PlayerProfileData = {
     expectedReturnDate: string | null;
     actualReturnDate: string | null;
   }>;
+  valuations: Array<{ year: number; month: number; value: number; currency?: string }>;
 };
 
 function getSeverityConfig(language: Language) {
@@ -426,8 +427,7 @@ export default async function PlayerProfilePage({ params }: { params: Promise<{ 
           </div>
 
           <div className="flex flex-col gap-6">
-            {/* Historyczny wykres wartosci pozostaje hardcoded, bo nie przechowujemy jeszcze historii. */}
-            <ValueChart language={language} />
+            <ValueChart language={language} valuations={player.valuations} />
           </div>
         </div>
       </main>

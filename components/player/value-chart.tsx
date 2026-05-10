@@ -14,12 +14,56 @@ const data = [
   { year: '2025', value: 87 },
 ];
 
-export function ValueChart({ language = 'pl' }: { language?: Language }) {
+export function ValueChart({ language = 'pl', valuations = [] }: { language?: Language; valuations?: Array<{ year: number; month: number; value: number; currency?: string }> }) {
   const title = language === 'pl' ? 'Historia wyceny rynkowej' : 'Market value history';
   const subtitle = language === 'pl' ? 'Wartość w milionach EUR' : 'Value in million EUR';
-  const delta = language === 'pl' ? '+24.3% vs zeszły rok' : '+24.3% vs last year';
   const tooltipSeries = language === 'pl' ? 'Wycena' : 'Valuation';
   const tooltipUnit = language === 'pl' ? 'mln' : 'M';
+
+  // Jeśli brak realnych wycen, pokażemy neutralny placeholder (bez fake danych)
+  if (!valuations || valuations.length === 0) {
+    return (
+      <Card className="bg-card/50 border-border/40">
+        <CardHeader className="pb-2">
+          <div className="flex items-start justify-between">
+            <div>
+              <CardTitle className="text-base font-semibold">{title}</CardTitle>
+              <CardDescription className="text-xs mt-1">{subtitle}</CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-6 pb-6">
+          <div className="flex w-full items-center justify-center text-sm text-muted-foreground">{language === 'pl' ? 'Brak historii wycen' : 'No valuation history'}</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const chartData = valuations
+    .slice()
+    .sort((a, b) => a.year - b.year || a.month - b.month)
+    .map((v) => ({
+      label: `${v.year}-${String(v.month).padStart(2, '0')}`,
+      value: Math.round((v.value / 1_000_000) * 10) / 10,
+      year: v.year,
+    }));
+
+  const latest = chartData.length > 0 ? chartData[chartData.length - 1].value : null;
+  const latestLabel = chartData.length > 0 ? (chartData[chartData.length - 1].label ?? String(chartData[chartData.length - 1].year)) : null;
+
+  const tickFormatter = (val: any) => {
+    const s = String(val);
+    if (s.includes('-')) return s.split('-')[0];
+    return s;
+  };
+
+  const labelFormatter = (label: any) => {
+    const s = String(label);
+    if (!s.includes('-')) return s;
+    const [y, m] = s.split('-');
+    const d = new Date(Number(y), Number(m) - 1, 1);
+    return d.toLocaleDateString(language === 'pl' ? 'pl-PL' : 'en-GB', { month: 'short', year: 'numeric' });
+  };
 
   return (
     <Card className="bg-card/50 border-border/40">
@@ -30,16 +74,16 @@ export function ValueChart({ language = 'pl' }: { language?: Language }) {
             <CardDescription className="text-xs mt-1">{subtitle}</CardDescription>
           </div>
           <div className="text-right">
-            <p className="text-2xl font-bold text-emerald-400">87 mln €</p>
-            <p className="text-xs text-emerald-400 mt-0.5">{delta}</p>
+            <p className="text-2xl font-bold text-emerald-400">{latest !== null ? `${latest} mln €` : '—'}</p>
+            <p className="text-xs text-emerald-400 mt-0.5">{latestLabel ?? ''}</p>
           </div>
         </div>
       </CardHeader>
       <CardContent className="pt-2">
         <ResponsiveContainer width="100%" height={200}>
-          <LineChart data={data} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
+          <LineChart data={chartData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-            <XAxis dataKey="year" tick={{ fontSize: 11, fill: '#ffffff' }} axisLine={false} tickLine={false} />
+            <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#ffffff' }} axisLine={false} tickLine={false} tickFormatter={tickFormatter} />
             <YAxis tick={{ fontSize: 11, fill: '#ffffff' }} axisLine={false} tickLine={false} tickFormatter={(v) => `${v}M`} />
             <Tooltip
               contentStyle={{
@@ -53,8 +97,9 @@ export function ValueChart({ language = 'pl' }: { language?: Language }) {
                 const numericValue = typeof v === 'number' ? v : Number(v ?? 0);
                 return [`${numericValue} ${tooltipUnit}`, tooltipSeries];
               }}
+              labelFormatter={labelFormatter}
             />
-            <ReferenceLine y={70} stroke="rgba(255,255,255,0.1)" strokeDasharray="4 4" />
+            <ReferenceLine y={latest ?? 0} stroke="rgba(255,255,255,0.1)" strokeDasharray="4 4" />
             <Line type="monotone" dataKey="value" stroke="#10b981" strokeWidth={2.5} dot={{ fill: '#10b981', r: 4, strokeWidth: 0 }} activeDot={{ r: 6, fill: '#10b981' }} />
           </LineChart>
         </ResponsiveContainer>

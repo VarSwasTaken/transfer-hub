@@ -273,6 +273,15 @@ async function seedNoSQL() {
         { year: 2025, month: 2, value: 60000000 },
       ],
     },
+    {
+      firstName: 'Kylian',
+      lastName: 'Mbappé',
+      valuations: [
+        { year: 2023, month: 11, value: 160000000 },
+        { year: 2024, month: 6, value: 170000000 },
+        { year: 2025, month: 2, value: 175000000 },
+      ],
+    },
   ];
 
   for (const entry of valuationsData) {

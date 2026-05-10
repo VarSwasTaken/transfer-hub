@@ -1,4 +1,5 @@
 import Injury from '@/models/Injury';
+import PlayerValuation from '@/models/PlayerValuation';
 
 import { connectToDatabase } from '@/lib/mongoose';
 import { prisma } from '@/lib/prisma';
@@ -55,9 +56,9 @@ export async function getPlayerProfile(playerId: number): Promise<PlayerProfileR
   const noSqlTask = (async () => {
     await connectToDatabase();
 
-    const injuryDocs = await Injury.find({ playerId }).sort({ startDate: -1 }).limit(10).exec();
+    const [injuryDocs, valuationDocs] = await Promise.all([Injury.find({ playerId }).sort({ startDate: -1 }).limit(10).exec(), PlayerValuation.find({ playerId }).sort({ year: -1, month: -1 }).limit(240).exec()]);
 
-    return injuryDocs.map((doc) => ({
+    const injuries = injuryDocs.map((doc) => ({
       id: doc.id,
       type: doc.type,
       severity: doc.severity,
@@ -71,11 +72,23 @@ export async function getPlayerProfile(playerId: number): Promise<PlayerProfileR
       createdAt: doc.createdAt?.toISOString() ?? null,
       updatedAt: doc.updatedAt?.toISOString() ?? null,
     }));
+
+    const valuations = valuationDocs.map((doc) => ({
+      year: doc.year,
+      month: doc.month,
+      value: doc.value,
+      currency: doc.currency,
+      createdAt: doc.createdAt?.toISOString() ?? null,
+      updatedAt: doc.updatedAt?.toISOString() ?? null,
+    }));
+
+    return { injuries, valuations };
   })();
 
   const noSqlResult = await Promise.race([noSqlTask.then((items) => ({ kind: 'ok' as const, items })), noSqlTask.catch((error) => ({ kind: 'error' as const, error })), new Promise<{ kind: 'timeout' }>((resolve) => setTimeout(() => resolve({ kind: 'timeout' }), NOSQL_TIMEOUT_MS))]);
 
-  const injuries: Array<Record<string, unknown>> = noSqlResult.kind === 'ok' ? noSqlResult.items : [];
+  const injuries: Array<Record<string, unknown>> = noSqlResult.kind === 'ok' ? noSqlResult.items.injuries : [];
+  const valuations: Array<Record<string, unknown>> = noSqlResult.kind === 'ok' ? noSqlResult.items.valuations : [];
 
   if (noSqlResult.kind === 'timeout') {
     warnings.push('NoSQL data unavailable: request timed out.');
@@ -162,6 +175,7 @@ export async function getPlayerProfile(playerId: number): Promise<PlayerProfileR
         },
       })),
       injuries,
+      valuations,
     },
     warnings,
   };
