@@ -1,8 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { Navbar } from '@/components/navbar';
-import { Footer } from '@/components/footer';
 import { RecentTransfers } from '@/components/home/recent-transfers';
 import { TopPlayers } from '@/components/home/top-players';
 import { TopClubs } from '@/components/home/top-clubs';
@@ -15,13 +13,11 @@ import { Button } from '@/components/ui/button';
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
           <Image src="/images/hero-stadium.jpg" alt="Stadion piłkarski" fill className="object-cover object-center opacity-20" priority />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background" />
+          <div className="absolute inset-0 bg-linear-to-b from-background/60 via-background/40 to-background" />
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4 py-12 md:py-16">
@@ -51,7 +47,7 @@ export default function HomePage() {
 
       <main className="mx-auto max-w-7xl px-4 py-8">
         {/* Transfer dnia banner */}
-        <div className="mb-6 rounded-xl overflow-hidden border border-emerald-500/20 bg-gradient-to-r from-emerald-950/60 to-card/60 relative">
+        <div className="mb-6 rounded-xl overflow-hidden border border-emerald-500/20 bg-linear-to-r from-emerald-950/60 to-card/60 relative">
           <div className="absolute inset-0 opacity-10">
             <Image src="/images/transfer-bg.jpg" alt="" fill className="object-cover object-center" />
           </div>
@@ -96,8 +92,6 @@ export default function HomePage() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

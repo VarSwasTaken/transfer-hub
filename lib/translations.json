@@ -49,6 +49,52 @@
       "noFromClub": "Brak klubu",
       "yearsOld": "lat",
       "loan": "Wypożyczenie"
+    },
+    "clubProfile": {
+      "noCountry": "Brak kraju",
+      "noLeague": "Brak ligi",
+      "noData": "Brak danych",
+      "noNationality": "Brak narodowości",
+      "noClub": "Bez klubu",
+      "squadValue": "Wartość składu",
+      "budget": "Budżet transferowy",
+      "country": "Państwo",
+      "league": "Liga",
+      "founded": "Rok założenia",
+      "stadium": "Stadion",
+      "playersInClub": "Brak zawodników w klubie.",
+      "playersNone": "Brak zawodników.",
+      "transferHistoryNone": "Brak historii transferów.",
+      "incomingTransfers": "Transfery przychodzące",
+      "outgoingTransfers": "Transfery odchodzące",
+      "rumoursMissing": "Brak danych o plotkach transferowych dla klubu w obecnym modelu bazy.",
+      "injuriesMissing": "Brak danych o kontuzjach klubowych w obecnym modelu bazy.",
+      "squadStats": "Statystyki składu",
+      "playersCount": "Liczba zawodników",
+      "averagePlayerValue": "Średnia wartość zawodnika",
+      "squadPlayers": "Skład zawodników",
+      "transfers": "Transfery",
+      "rumours": "Plotki transferowe",
+      "injuries": "Kontuzjowani zawodnicy",
+      "positionGroups": {
+        "GOALKEEPER": "Bramkarze",
+        "DEFENDER": "Obrońcy",
+        "MIDFIELDER": "Pomocnicy",
+        "FORWARD": "Napastnicy"
+      },
+      "positionLabels": {
+        "GOALKEEPER": "BR",
+        "DEFENDER": "OBR",
+        "MIDFIELDER": "POM",
+        "FORWARD": "N"
+      },
+      "chart": {
+        "title": "Historia wartości składu",
+        "subtitle": "Wartość w milionach EUR",
+        "series": "Wartość składu",
+        "unit": "mln €",
+        "deltaSuffix": "vs zeszły rok"
+      }
     }
   },
   "en": {
@@ -101,6 +147,52 @@
       "noFromClub": "No club",
       "yearsOld": "yrs",
       "loan": "Loan"
+    },
+    "clubProfile": {
+      "noCountry": "No country",
+      "noLeague": "No league",
+      "noData": "No data",
+      "noNationality": "No nationality",
+      "noClub": "No club",
+      "squadValue": "Squad value",
+      "budget": "Transfer budget",
+      "country": "Country",
+      "league": "League",
+      "founded": "Founded",
+      "stadium": "Stadium",
+      "playersInClub": "No players in this club.",
+      "playersNone": "No players.",
+      "transferHistoryNone": "No transfer history.",
+      "incomingTransfers": "Incoming transfers",
+      "outgoingTransfers": "Outgoing transfers",
+      "rumoursMissing": "No transfer rumours data for this club in the current database model.",
+      "injuriesMissing": "No club injury data in the current database model.",
+      "squadStats": "Squad stats",
+      "playersCount": "Player count",
+      "averagePlayerValue": "Average player value",
+      "squadPlayers": "Squad",
+      "transfers": "Transfers",
+      "rumours": "Transfer rumours",
+      "injuries": "Injured players",
+      "positionGroups": {
+        "GOALKEEPER": "Goalkeepers",
+        "DEFENDER": "Defenders",
+        "MIDFIELDER": "Midfielders",
+        "FORWARD": "Forwards"
+      },
+      "positionLabels": {
+        "GOALKEEPER": "GK",
+        "DEFENDER": "DF",
+        "MIDFIELDER": "MF",
+        "FORWARD": "FW"
+      },
+      "chart": {
+        "title": "Squad value history",
+        "subtitle": "Value in million EUR",
+        "series": "Squad value",
+        "unit": "mln €",
+        "deltaSuffix": "vs last year"
+      }
     }
   }
 }

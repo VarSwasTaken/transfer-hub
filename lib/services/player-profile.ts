@@ -112,6 +112,21 @@ export async function getPlayerProfile(playerId: number): Promise<PlayerProfileR
     };
   }
 
+  const currentMarketValue = player.marketValue?.toNumber() ?? null;
+  const resolvedValuations =
+    valuations.length > 0 || currentMarketValue === null
+      ? valuations
+      : [
+          {
+            year: new Date().getFullYear(),
+            month: new Date().getMonth() + 1,
+            value: currentMarketValue,
+            currency: 'EUR',
+            createdAt: null,
+            updatedAt: null,
+          },
+        ];
+
   return {
     data: {
       id: player.id,
@@ -163,7 +178,6 @@ export async function getPlayerProfile(playerId: number): Promise<PlayerProfileR
         releaseClause: decimalToString(contract.releaseClause),
       })),
       transfers: player.transfers.map((transfer) => ({
-        id: transfer.id,
         date: transfer.date.toISOString(),
         transferType: transfer.transferType,
         fee: decimalToString(transfer.fee),
@@ -181,7 +195,7 @@ export async function getPlayerProfile(playerId: number): Promise<PlayerProfileR
         },
       })),
       injuries,
-      valuations,
+      valuations: resolvedValuations,
     },
     warnings,
   };

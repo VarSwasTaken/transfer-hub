@@ -3,15 +3,11 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import type { Language } from '@/lib/i18n';
+import { getTranslations, type Language } from '@/lib/i18n';
 
 export function SquadValueChart({ language = 'pl', valuations = [] }: { language?: Language; valuations?: Array<{ year: number; value: number }> }) {
   const data = (valuations ?? []).map((v) => ({ year: String(v.year), value: v.value }));
-  const title = language === 'pl' ? 'Historia wartości składu' : 'Squad value history';
-  const subtitle = language === 'pl' ? 'Wartość w milionach EUR' : 'Value in million EUR';
-  const delta = language === 'pl' ? '+8.2% vs zeszły rok' : '+8.2% vs last year';
-  const tooltipSeries = language === 'pl' ? 'Wartość składu' : 'Squad value';
-  const tooltipUnit = language === 'pl' ? 'mln' : 'M';
+  const t = getTranslations(language).clubProfile.chart;
 
   // compute display numbers
   const latest = data.length > 0 ? data[data.length - 1].value : 0;
@@ -23,12 +19,14 @@ export function SquadValueChart({ language = 'pl', valuations = [] }: { language
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <CardTitle className="text-base font-semibold">{title}</CardTitle>
-            <CardDescription className="mt-1 text-xs">{subtitle}</CardDescription>
+            <CardTitle className="text-base font-semibold">{t.title}</CardTitle>
+            <CardDescription className="mt-1 text-xs">{t.subtitle}</CardDescription>
           </div>
           <div className="text-right">
-            <p className="text-2xl font-bold text-emerald-400">{latest} mln €</p>
-            <p className="mt-0.5 text-xs text-emerald-400">{deltaPct >= 0 ? `+${deltaPct}% vs last year` : `${deltaPct}% vs last year`}</p>
+            <p className="text-2xl font-bold text-emerald-400">
+              {latest} {t.unit}
+            </p>
+            <p className="mt-0.5 text-xs text-emerald-400">{deltaPct >= 0 ? `+${deltaPct}% ${t.deltaSuffix}` : `${deltaPct}% ${t.deltaSuffix}`}</p>
           </div>
         </div>
       </CardHeader>
@@ -48,7 +46,7 @@ export function SquadValueChart({ language = 'pl', valuations = [] }: { language
               }}
               formatter={(v) => {
                 const numericValue = typeof v === 'number' ? v : Number(v ?? 0);
-                return [`${numericValue} ${tooltipUnit}`, tooltipSeries];
+                return [`${numericValue} ${t.unit}`, t.series];
               }}
             />
             {/** optional reference line at latest value */}
