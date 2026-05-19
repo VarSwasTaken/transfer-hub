@@ -32,14 +32,29 @@ export async function connectToDatabase() {
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose
-      .connect(mongodbUri, {
-        bufferCommands: false,
-      })
-      .catch((error) => {
-        cached.promise = null;
-        throw error;
-      });
+    cached.promise = Promise.race([
+      mongoose
+        .connect(mongodbUri, {
+          bufferCommands: false,
+        })
+        .catch((error) => {
+          cached.promise = null;
+          throw error;
+        }),
+      new Promise((_, reject) =>
+        setTimeout(
+          () => {
+            cached.promise = null;
+            reject(
+              new Error(
+                'MongoDB connection timeout (5s). Check if your IP is whitelisted in MongoDB Atlas Network Access.'
+              )
+            );
+          },
+          5000
+        )
+      ),
+    ]);
   }
 
   cached.conn = await cached.promise;

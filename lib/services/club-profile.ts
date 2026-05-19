@@ -14,7 +14,7 @@ function decimalToString(value: { toString(): string } | null | undefined) {
 export async function getClubProfile(clubId: number): Promise<ClubProfileResult> {
   const warnings: string[] = [];
 
-  const club = await prisma.club.findUnique({
+  const clubQuery = prisma.club.findUnique({
     where: { id: clubId },
     include: {
       league: {
@@ -25,11 +25,11 @@ export async function getClubProfile(clubId: number): Promise<ClubProfileResult>
       players: {
         include: {
           nationality: true,
-          agent: true,
         },
         orderBy: {
           marketValue: 'desc',
         },
+        take: 50,
       },
       transfersIn: {
         include: {
@@ -62,6 +62,8 @@ export async function getClubProfile(clubId: number): Promise<ClubProfileResult>
     },
   });
 
+  const club = (await Promise.race([clubQuery, new Promise((_, reject) => setTimeout(() => reject(new Error('Club query timed out')), 3000))])) as Awaited<typeof clubQuery>;
+
   if (!club) {
     return {
       data: null,
@@ -78,9 +80,10 @@ export async function getClubProfile(clubId: number): Promise<ClubProfileResult>
   try {
     await connectToDatabase();
     const currentYear = new Date().getFullYear();
+    const minYear = currentYear - 15; // Last 15 years
 
-    // Get historical club valuations from MongoDB (all years)
-    const clubVals = await ClubValuation.find({ clubId }).sort({ year: 1 });
+    // Get historical club valuations from MongoDB (last 15 years)
+    const clubVals = await ClubValuation.find({ clubId, year: { $gte: minYear } }).sort({ year: 1 });
 
     // Build map: year -> value
     const valuesByYear = new Map<number, number>();
@@ -144,13 +147,6 @@ export async function getClubProfile(clubId: number): Promise<ClubProfileResult>
               name: player.nationality.name,
               namePL: player.nationality.name_PL,
               flagUrl: player.nationality.flagUrl,
-            }
-          : null,
-        agent: player.agent
-          ? {
-              id: player.agent.id,
-              name: player.agent.name,
-              agency: player.agent.agency,
             }
           : null,
       })),

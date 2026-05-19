@@ -40,15 +40,15 @@ const secondaryNav = [
   },
   {
     label: { pl: 'Ligi', en: 'Leagues' },
-    href: '/ligi',
+    href: '/leagues',
     sub: [
-      { label: { pl: 'Premier League', en: 'Premier League' }, href: '/ligi/premier-league' },
-      { label: { pl: 'La Liga', en: 'La Liga' }, href: '/ligi/la-liga' },
-      { label: { pl: 'Bundesliga', en: 'Bundesliga' }, href: '/ligi/bundesliga' },
-      { label: { pl: 'Serie A', en: 'Serie A' }, href: '/ligi/serie-a' },
-      { label: { pl: 'Ligue 1', en: 'Ligue 1' }, href: '/ligi/ligue-1' },
-      { label: { pl: 'Ekstraklasa', en: 'Ekstraklasa' }, href: '/ligi/ekstraklasa' },
-      { label: { pl: 'Więcej lig...', en: 'More leagues...' }, href: '/ligi' },
+      { label: { pl: 'Premier League', en: 'Premier League' }, href: '/leagues' },
+      { label: { pl: 'La Liga', en: 'La Liga' }, href: '/leagues' },
+      { label: { pl: 'Bundesliga', en: 'Bundesliga' }, href: '/leagues' },
+      { label: { pl: 'Serie A', en: 'Serie A' }, href: '/leagues' },
+      { label: { pl: 'Ligue 1', en: 'Ligue 1' }, href: '/leagues' },
+      { label: { pl: 'Ekstraklasa', en: 'Ekstraklasa' }, href: '/leagues' },
+      { label: { pl: 'Więcej lig...', en: 'More leagues...' }, href: '/leagues' },
     ],
   },
   {
