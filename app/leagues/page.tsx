@@ -4,6 +4,7 @@ import { LeaguesListView } from './leagues-list-view';
 type LeagueListItem = {
   id: number;
   name: string;
+  slug: string;
   logoUrl: string | null;
   clubsCount: number;
   nationality: {

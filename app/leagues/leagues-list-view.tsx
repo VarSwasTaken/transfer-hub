@@ -8,6 +8,7 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 type LeagueListItem = {
   id: number;
   name: string;
+  slug: string;
   logoUrl: string | null;
   clubsCount: number;
   nationality: {
@@ -36,7 +37,7 @@ export function LeaguesListView({ leagues, meta }: { leagues: LeagueListItem[]; 
       {/* Leagues Grid */}
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mb-8">
         {leagues.map((league) => (
-          <Link key={league.id} href={`/leagues/${league.id}`}>
+          <Link key={league.id} href={`/leagues/${league.slug}`}>
             <Card className="h-full hover:border-emerald-500/40 transition-colors cursor-pointer">
               <CardContent className="pt-6">
                 <div className="flex flex-col items-center text-center gap-4">

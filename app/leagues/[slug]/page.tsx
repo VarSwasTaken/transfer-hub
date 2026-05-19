@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { LeagueProfileView } from './league-profile-view';
-import { getLeagueProfile } from '@/lib/services/league-profile';
+import { getLeagueProfileBySlug } from '@/lib/services/league-profile';
 
 export const fetchCache = 'force-no-store';
 
@@ -30,15 +30,10 @@ type LeagueProfileData = {
   }>;
 };
 
-export default async function LeagueProfilePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const leagueId = Number(id);
+export default async function LeagueProfilePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
 
-  if (!Number.isInteger(leagueId) || leagueId <= 0) {
-    notFound();
-  }
-
-  const profile = await getLeagueProfile(leagueId);
+  const profile = await getLeagueProfileBySlug(slug);
   const league = profile.data as LeagueProfileData | null;
 
   if (!league) {

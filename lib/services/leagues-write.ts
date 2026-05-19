@@ -1,4 +1,11 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from '@/lib/prisma';
+
+function generateSlug(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
 
 type CreateLeagueInput = {
   name: string;
@@ -29,14 +36,7 @@ type DeleteLeagueResult =
       };
     };
 
-function mapLeague(league: {
-  id: number;
-  name: string;
-  nationalityId: number;
-  logoUrl: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-}): LeagueWriteResult {
+function mapLeague(league: { id: number; name: string; nationalityId: number; logoUrl: string | null; createdAt: Date; updatedAt: Date }): LeagueWriteResult {
   return {
     id: league.id,
     name: league.name,
@@ -51,6 +51,7 @@ export async function createLeague(input: CreateLeagueInput): Promise<LeagueWrit
   const created = await prisma.league.create({
     data: {
       name: input.name,
+      slug: generateSlug(input.name),
       nationalityId: input.nationalityId,
       logoUrl: input.logoUrl ?? null,
     },
@@ -59,10 +60,7 @@ export async function createLeague(input: CreateLeagueInput): Promise<LeagueWrit
   return mapLeague(created);
 }
 
-export async function updateLeague(
-  id: number,
-  input: UpdateLeagueInput,
-): Promise<LeagueWriteResult | null> {
+export async function updateLeague(id: number, input: UpdateLeagueInput): Promise<LeagueWriteResult | null> {
   const existing = await prisma.league.findUnique({ where: { id }, select: { id: true } });
   if (!existing) {
     return null;
@@ -72,6 +70,7 @@ export async function updateLeague(
     where: { id },
     data: {
       name: input.name,
+      slug: input.name ? generateSlug(input.name) : undefined,
       nationalityId: input.nationalityId,
       logoUrl: input.logoUrl,
     },
@@ -90,7 +89,7 @@ export async function deleteLeague(id: number): Promise<DeleteLeagueResult | nul
   if (linkedClubs > 0) {
     return {
       deleted: false,
-      error: "Cannot delete league while clubs are assigned to it.",
+      error: 'Cannot delete league while clubs are assigned to it.',
       dependencies: {
         clubs: linkedClubs,
       },

@@ -30,7 +30,7 @@ export async function connectToDatabase() {
   }
 
   if (!cached.promise) {
-    cached.promise = Promise.race([
+    cached.promise = Promise.race<typeof mongoose>([
       mongoose
         .connect(mongodbUri, {
           bufferCommands: false,
@@ -39,7 +39,7 @@ export async function connectToDatabase() {
           cached.promise = null;
           throw error;
         }),
-      new Promise((_, reject) =>
+      new Promise<typeof mongoose>((_, reject) =>
         setTimeout(() => {
           cached.promise = null;
           reject(new Error('MongoDB connection timeout (5s). Check if your IP is whitelisted in MongoDB Atlas Network Access.'));

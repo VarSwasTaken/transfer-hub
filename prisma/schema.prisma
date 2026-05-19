@@ -43,6 +43,7 @@ model Nationality {
 model League {
   id            Int      @id @default(autoincrement())
   name          String   @unique
+  slug          String   @unique
   logoUrl       String?
   nationality   Nationality @relation(fields: [nationalityId], references: [id])
   nationalityId Int

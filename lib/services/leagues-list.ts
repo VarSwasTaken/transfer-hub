@@ -1,7 +1,7 @@
-import { Prisma } from "@prisma/client";
+import { Prisma } from '@prisma/client';
 
-import { prisma } from "@/lib/prisma";
-import { matchesAnyNormalizedField, normalizeForSearch } from "@/lib/search/normalized-search";
+import { prisma } from '@/lib/prisma';
+import { matchesAnyNormalizedField, normalizeForSearch } from '@/lib/search/normalized-search';
 
 const MAX_LIMIT = 100;
 
@@ -10,13 +10,14 @@ type GetLeaguesListInput = {
   limit: number;
   search?: string;
   nationalityId?: number;
-  sortBy: "name" | "createdAt";
-  sortOrder: "asc" | "desc";
+  sortBy: 'name' | 'createdAt';
+  sortOrder: 'asc' | 'desc';
 };
 
 type LeaguesListItem = {
   id: number;
   name: string;
+  slug: string;
   logoUrl: string | null;
   clubsCount: number;
   nationality: {
@@ -54,10 +55,7 @@ function matchesSearch(league: LeagueListRecord, normalizedSearch: string): bool
     return true;
   }
 
-  return matchesAnyNormalizedField(normalizedSearch, [
-    league.name,
-    league.nationality.name,
-  ]);
+  return matchesAnyNormalizedField(normalizedSearch, [league.name, league.nationality.name]);
 }
 
 export async function getLeaguesList(input: GetLeaguesListInput): Promise<LeaguesListResult> {
@@ -65,15 +63,13 @@ export async function getLeaguesList(input: GetLeaguesListInput): Promise<League
   const limit = Math.min(MAX_LIMIT, Math.max(1, input.limit));
   const skip = (page - 1) * limit;
 
-  const where: Prisma.LeagueWhereInput = input.nationalityId
-    ? { nationalityId: input.nationalityId }
-    : {};
+  const where: Prisma.LeagueWhereInput = input.nationalityId ? { nationalityId: input.nationalityId } : {};
 
   const orderBy: Prisma.LeagueOrderByWithRelationInput = {
     [input.sortBy]: input.sortOrder,
   };
 
-  const normalizedSearch = input.search ? normalizeForSearch(input.search) : "";
+  const normalizedSearch = input.search ? normalizeForSearch(input.search) : '';
 
   let totalItems = 0;
   let leagues: LeagueListRecord[] = [];
@@ -111,6 +107,7 @@ export async function getLeaguesList(input: GetLeaguesListInput): Promise<League
     data: leagues.map((league) => ({
       id: league.id,
       name: league.name,
+      slug: league.slug,
       logoUrl: league.logoUrl,
       clubsCount: league._count.clubs,
       nationality: {

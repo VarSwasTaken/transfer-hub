@@ -252,31 +252,37 @@ async function main() {
   const leagues = [
     {
       name: 'Premier League',
+      slug: 'premier-league',
       countryName: 'England',
       logo: 'https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg',
     },
     {
       name: 'La Liga',
+      slug: 'la-liga',
       countryName: 'Spain',
       logo: 'https://upload.wikimedia.org/wikipedia/commons/0/0f/LaLiga_logo_2023.svg',
     },
     {
       name: 'Bundesliga',
+      slug: 'bundesliga',
       countryName: 'Germany',
       logo: 'https://upload.wikimedia.org/wikipedia/en/d/df/Bundesliga_logo_%282017%29.svg',
     },
     {
       name: 'Serie A',
+      slug: 'serie-a',
       countryName: 'Italy',
       logo: 'https://upload.wikimedia.org/wikipedia/commons/e/e9/Serie_A_logo_2022.svg',
     },
     {
       name: 'Ligue 1',
+      slug: 'ligue-1',
       countryName: 'France',
       logo: 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Ligue1_logo_2024.svg',
     },
     {
       name: 'Ekstraklasa',
+      slug: 'ekstraklasa',
       countryName: 'Poland',
       logo: 'https://upload.wikimedia.org/wikipedia/commons/b/b2/Ekstraklasa_logo_2021.svg',
     },
@@ -296,6 +302,7 @@ async function main() {
     const createdLeague = await prisma.league.upsert({
       where: { name: l.name },
       update: {
+        slug: l.slug,
         logoUrl: l.logo,
         nationality: {
           connect: { name: l.countryName },
@@ -303,6 +310,7 @@ async function main() {
       },
       create: {
         name: l.name,
+        slug: l.slug,
         logoUrl: l.logo,
         nationality: {
           connect: { name: l.countryName },
