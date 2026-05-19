@@ -1,9 +1,9 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-  throw new Error("Missing MONGODB_URI environment variable.");
+  throw new Error('Missing MONGODB_URI environment variable.');
 }
 
 // Type narrowing for TypeScript
@@ -22,9 +22,7 @@ const globalForMongoose = globalThis as typeof globalThis & {
   mongooseCache?: MongooseCache;
 };
 
-const cached =
-  globalForMongoose.mongooseCache ??
-  (globalForMongoose.mongooseCache = { conn: null, promise: null });
+const cached = globalForMongoose.mongooseCache ?? (globalForMongoose.mongooseCache = { conn: null, promise: null });
 
 export async function connectToDatabase() {
   if (cached.conn) {
@@ -42,17 +40,10 @@ export async function connectToDatabase() {
           throw error;
         }),
       new Promise((_, reject) =>
-        setTimeout(
-          () => {
-            cached.promise = null;
-            reject(
-              new Error(
-                'MongoDB connection timeout (5s). Check if your IP is whitelisted in MongoDB Atlas Network Access.'
-              )
-            );
-          },
-          5000
-        )
+        setTimeout(() => {
+          cached.promise = null;
+          reject(new Error('MongoDB connection timeout (5s). Check if your IP is whitelisted in MongoDB Atlas Network Access.'));
+        }, 5000),
       ),
     ]);
   }
