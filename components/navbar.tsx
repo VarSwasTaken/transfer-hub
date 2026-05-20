@@ -55,7 +55,7 @@ const secondaryNav = [
     href: '/players',
     sub: [
       { label: { pl: 'Przeglądaj zawodników', en: 'Browse players' }, href: '/players' },
-      { label: { pl: 'Wolni agenci', en: 'Free agents' }, href: '/players/wolni-agenci' },
+      { label: { pl: 'Wolni agenci', en: 'Free agents' }, href: '/free-agents' },
     ],
   },
 ];
