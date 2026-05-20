@@ -164,6 +164,7 @@ export async function getPlayersList(input: GetPlayersListInput): Promise<Player
               ? {
                   id: player.club.league.id,
                   name: player.club.league.name,
+                  slug: player.club.league.slug,
                 }
               : null,
           }

@@ -302,7 +302,11 @@ export function PlayerProfileView({ player }: { player: PlayerProfileData | null
             </CardHeader>
             <CardContent className="p-0">
               <div className="divide-y divide-border/30">
-                {player.transfers.length === 0 && <div className="px-6 py-4 text-sm text-muted-foreground">{t.noTransferHistory}</div>}
+                {player.transfers.length === 0 && (
+                  <div key="no-transfers" className="px-6 py-4 text-sm text-muted-foreground">
+                    {t.noTransferHistory}
+                  </div>
+                )}
                 {player.transfers.map((transfer) => {
                   const trend = getTrend(transfer.transferType, transfer.fee);
                   const feeLabel = transfer.transferType === 'FREE' ? '0M €' : transfer.transferType === 'LOAN' ? t.loan : formatMarketValue(transfer.fee, language);
@@ -370,7 +374,11 @@ export function PlayerProfileView({ player }: { player: PlayerProfileData | null
             </CardHeader>
             <CardContent className="p-0">
               <div className="divide-y divide-border/30">
-                {player.injuries.length === 0 && <div className="px-6 py-4 text-sm text-muted-foreground">{t.noInjuryHistory}</div>}
+                {player.injuries.length === 0 && (
+                  <div key="no-injuries" className="px-6 py-4 text-sm text-muted-foreground">
+                    {t.noInjuryHistory}
+                  </div>
+                )}
                 {player.injuries.map((injury) => (
                   <div key={injury.id} className="flex items-center gap-4 px-6 py-3.5">
                     <div className="min-w-0 flex-1">

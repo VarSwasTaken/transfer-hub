@@ -34,7 +34,7 @@ export default function HomePage() {
                 { label: 'Ekstraklasa', href: '/leagues' },
                 { label: 'Premier League', href: '/leagues' },
                 { label: 'Zimowe okienko', href: '/transfery/okienka/zima-2025' },
-                { label: 'Rankingi', href: '/rankingi' },
+                { label: 'Rankingi', href: '/rankings' },
               ].map((link) => (
                 <Link key={link.label} href={link.href} className="text-xs rounded-full border border-border/50 bg-card/50 px-3 py-1 text-muted-foreground hover:text-emerald-400 hover:border-emerald-500/40 transition-colors">
                   {link.label}

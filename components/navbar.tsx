@@ -31,11 +31,10 @@ const secondaryNav = [
   },
   {
     label: { pl: 'Rankingi', en: 'Rankings' },
-    href: '/rankingi',
+    href: '/rankings',
     sub: [
-      { label: { pl: 'Najdroższe transfery', en: 'Most expensive transfers' }, href: '/rankingi/najdrozsze' },
-      { label: { pl: 'Top wyceniani piłkarze', en: 'Top valued players' }, href: '/rankingi/wyceny-pilkarze' },
-      { label: { pl: 'Top wyceniane kluby', en: 'Top valued clubs' }, href: '/rankingi/wyceny-kluby' },
+      { label: { pl: 'Najdrożsi zawodnicy', en: 'Most expensive players' }, href: '/rankings/most-expensive-players' },
+      { label: { pl: 'Najdroższe kluby', en: 'Most expensive clubs' }, href: '/rankings/most-expensive-clubs' },
     ],
   },
   {
@@ -53,10 +52,10 @@ const secondaryNav = [
   },
   {
     label: { pl: 'Zawodnicy', en: 'Players' },
-    href: '/zawodnicy',
+    href: '/players',
     sub: [
-      { label: { pl: 'Przeglądaj zawodników', en: 'Browse players' }, href: '/zawodnicy' },
-      { label: { pl: 'Wolni agenci', en: 'Free agents' }, href: '/zawodnicy/wolni-agenci' },
+      { label: { pl: 'Przeglądaj zawodników', en: 'Browse players' }, href: '/players' },
+      { label: { pl: 'Wolni agenci', en: 'Free agents' }, href: '/players/wolni-agenci' },
     ],
   },
 ];

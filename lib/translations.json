@@ -95,6 +95,30 @@
         "unit": "mln €",
         "deltaSuffix": "vs zeszły rok"
       }
+    },
+    "rankings": {
+      "topPlayers": "Najdrożsi zawodnicy",
+      "topPlayersDesc": "Zawodnicy rankingowani po wartości rynkowej",
+      "clubValuations": "Najdroższe kluby",
+      "clubValuationsDesc": "Kluby rankingowane po sumie wartości ich składów",
+      "playerValuations": "Wyceny zawodników",
+      "playerValuationsDesc": "Wszyscy zawodnicy rankingowani po wartości rynkowej",
+      "filters": "Filtry",
+      "position": "Pozycja",
+      "club": "Klub",
+      "league": "Liga",
+      "marketValue": "Wartość rynkowa",
+      "player": "Zawodnik",
+      "age": "Wiek",
+      "squadsValue": "Suma wartości",
+      "players": "Zawodnicy",
+      "loading": "Ładowanie...",
+      "noData": "Brak danych",
+      "all": "Wszystko",
+      "page": "Strona",
+      "of": "z",
+      "previous": "Wstecz",
+      "next": "Dalej"
     }
   },
   "en": {
@@ -193,6 +217,30 @@
         "unit": "mln €",
         "deltaSuffix": "vs last year"
       }
+    },
+    "rankings": {
+      "topPlayers": "Most Expensive Players",
+      "topPlayersDesc": "Top players ranked by market value",
+      "clubValuations": "Club Valuations",
+      "clubValuationsDesc": "Clubs ranked by total squad value",
+      "playerValuations": "Player Valuations",
+      "playerValuationsDesc": "All players ranked by market value",
+      "filters": "Filters",
+      "position": "Position",
+      "club": "Club",
+      "league": "League",
+      "marketValue": "Market Value",
+      "player": "Player",
+      "age": "Age",
+      "squadsValue": "Squad Value",
+      "players": "Players",
+      "loading": "Loading...",
+      "noData": "No data",
+      "all": "All",
+      "page": "Page",
+      "of": "of",
+      "previous": "Previous",
+      "next": "Next"
     }
   }
 }
