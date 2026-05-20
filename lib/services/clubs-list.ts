@@ -1,7 +1,7 @@
-import { Prisma } from "@prisma/client";
+import { Prisma } from '@prisma/client';
 
-import { prisma } from "@/lib/prisma";
-import { matchesAnyNormalizedField, normalizeForSearch } from "@/lib/search/normalized-search";
+import { prisma } from '@/lib/prisma';
+import { matchesAnyNormalizedField, normalizeForSearch } from '@/lib/search/normalized-search';
 
 const MAX_LIMIT = 100;
 
@@ -11,8 +11,8 @@ type GetClubsListInput = {
   search?: string;
   leagueId?: number;
   nationalityId?: number;
-  sortBy: "name" | "budget" | "createdAt";
-  sortOrder: "asc" | "desc";
+  sortBy: 'name' | 'budget' | 'createdAt';
+  sortOrder: 'asc' | 'desc';
 };
 
 type ClubsListItem = {
@@ -63,11 +63,8 @@ function matchesSearch(club: ClubListRecord, normalizedSearch: string): boolean 
     return true;
   }
 
-  return matchesAnyNormalizedField(normalizedSearch, [
-    club.name,
-    club.league.name,
-    club.league.nationality.name,
-  ]);
+  // Only match against the club name for global search (avoid matching league or nationality fields)
+  return matchesAnyNormalizedField(normalizedSearch, [club.name]);
 }
 
 export async function getClubsList(input: GetClubsListInput): Promise<ClubsListResult> {
@@ -85,14 +82,13 @@ export async function getClubsList(input: GetClubsListInput): Promise<ClubsListR
     andConditions.push({ league: { nationalityId: input.nationalityId } });
   }
 
-  const where: Prisma.ClubWhereInput =
-    andConditions.length > 0 ? { AND: andConditions } : {};
+  const where: Prisma.ClubWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 
   const orderBy: Prisma.ClubOrderByWithRelationInput = {
     [input.sortBy]: input.sortOrder,
   };
 
-  const normalizedSearch = input.search ? normalizeForSearch(input.search) : "";
+  const normalizedSearch = input.search ? normalizeForSearch(input.search) : '';
 
   let totalItems = 0;
   let clubs: ClubListRecord[] = [];

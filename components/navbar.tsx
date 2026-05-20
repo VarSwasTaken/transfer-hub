@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Search, Menu, X, ChevronDown } from 'lucide-react';
@@ -72,34 +72,101 @@ function SearchBar({ className, language }: { className?: string; language: Lang
   const [scope, setScope] = useState(searchScopes[0]);
   const [scopeOpen, setScopeOpen] = useState(false);
   const [query, setQuery] = useState('');
+  const [results, setResults] = useState<any | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
   const dropRef = useRef<HTMLDivElement>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const debounceRef = useRef<number | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
       if (dropRef.current && !dropRef.current.contains(e.target as Node)) {
         setScopeOpen(false);
+        setOpen(false);
       }
     }
     document.addEventListener('mousedown', onClickOutside);
     return () => document.removeEventListener('mousedown', onClickOutside);
   }, []);
 
+  useEffect(() => {
+    // hide results when scope selector opens
+    if (scopeOpen) setOpen(false);
+    // debounce search
+    if (debounceRef.current) window.clearTimeout(debounceRef.current);
+    if (!query || query.trim().length < 2) {
+      setResults(null);
+      setOpen(false);
+      setLoading(false);
+      return;
+    }
+
+    debounceRef.current = window.setTimeout(async () => {
+      // cancel previous
+      if (abortRef.current) abortRef.current.abort();
+      const ctrl = new AbortController();
+      abortRef.current = ctrl;
+      setLoading(true);
+      try {
+        const typeMap: Record<string, string> = {
+          all: 'all',
+          zawodnicy: 'players',
+          kluby: 'clubs',
+          agenci: 'agents',
+          ligi: 'leagues',
+        };
+        const type = typeMap[scope.value] || 'all';
+        const params = new URLSearchParams({ query: query.trim(), type, limit: '5' });
+        const res = await fetch(`/api/v1/search?${params.toString()}`, { signal: ctrl.signal });
+        if (!res.ok) throw new Error('Search failed');
+        const json = await res.json();
+        setResults(json.data);
+        const hasAny = (json.data.players?.length || 0) + (json.data.clubs?.length || 0) + (json.data.leagues?.length || 0) + (json.data.agents?.length || 0) > 0;
+        setOpen(hasAny);
+      } catch (err) {
+        if ((err as any).name !== 'AbortError') {
+          console.error('Search error', err);
+        }
+        setResults(null);
+      } finally {
+        setLoading(false);
+      }
+    }, 300);
+
+    return () => {
+      if (debounceRef.current) window.clearTimeout(debounceRef.current);
+    };
+  }, [query, scope]);
+
+  function mapLabelForPlaceholder() {
+    return language === 'pl' ? `Szukaj ${scope.value === 'all' ? 'zawodników, klubów, lig...' : scope.label.pl.toLowerCase() + '...'}` : `Search ${scope.value === 'all' ? 'players, clubs, leagues...' : scope.label.en.toLowerCase() + '...'}`;
+  }
+
   return (
-    <div className={cn('relative flex items-center rounded-lg border border-border/60 bg-muted/40 overflow-visible focus-within:ring-2 focus-within:ring-emerald-500/40 focus-within:border-emerald-500/40 transition-all', className)}>
+    <div ref={dropRef} className={cn('relative flex items-center rounded-lg border border-border/60 bg-muted/40 overflow-visible focus-within:ring-2 focus-within:ring-emerald-500/40 focus-within:border-emerald-500/40 transition-all', className)}>
       {/* Scope selector */}
-      <div className="relative shrink-0" ref={dropRef}>
-        <button onClick={() => setScopeOpen(!scopeOpen)} className="flex cursor-pointer items-center gap-1 px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground border-r border-border/60 whitespace-nowrap transition-colors">
+      <div className="relative shrink-0">
+        <button
+          onClick={() => {
+            setScopeOpen(!scopeOpen);
+            setOpen(false);
+          }}
+          className="flex cursor-pointer items-center gap-1 px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground border-r border-border/60 whitespace-nowrap transition-colors"
+        >
           {scope.label[language]}
           <ChevronDown className="h-3 w-3" />
         </button>
         {scopeOpen && (
-          <div className="absolute top-full left-0 mt-1 w-36 rounded-md border border-border/60 bg-popover shadow-lg z-50 py-1">
+          <div className="absolute top-full left-0 mt-1 w-36 rounded-md border border-border/60 bg-popover shadow-lg z-[9999] py-1">
             {searchScopes.map((s) => (
               <button
                 key={s.value}
                 onClick={() => {
                   setScope(s);
                   setScopeOpen(false);
+                  setOpen(false);
                 }}
                 className={cn('w-full cursor-pointer text-left px-3 py-1.5 text-sm transition-colors hover:bg-muted', scope.value === s.value ? 'text-emerald-400' : 'text-muted-foreground')}
               >
@@ -111,12 +178,149 @@ function SearchBar({ className, language }: { className?: string; language: Lang
       </div>
 
       {/* Input */}
-      <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={language === 'pl' ? `Szukaj ${scope.value === 'all' ? 'zawodników, klubów, lig...' : scope.label.pl.toLowerCase() + '...'}` : `Search ${scope.value === 'all' ? 'players, clubs, leagues...' : scope.label.en.toLowerCase() + '...'}`} className="flex-1 bg-transparent px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none min-w-0" />
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder={mapLabelForPlaceholder()}
+        className="flex-1 bg-transparent px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none min-w-0"
+        onFocus={() => {
+          if (results) setOpen(true);
+        }}
+      />
 
       {/* Search button */}
-      <button className="flex items-center justify-center px-3 py-2 text-muted-foreground hover:text-emerald-400 transition-colors shrink-0">
+      <button
+        className="flex items-center justify-center px-3 py-2 text-muted-foreground hover:text-emerald-400 transition-colors shrink-0"
+        onClick={() => {
+          if (query.trim().length >= 2) setQuery((q) => q);
+        }}
+      >
         <Search className="h-4 w-4" />
       </button>
+
+      {/* Results dropdown */}
+      {open && results && (
+        <div className="absolute left-0 right-0 top-full mt-2 z-50 w-full max-w-xl mx-auto rounded-md border border-border/60 bg-popover shadow-lg">
+          <div className="p-2">
+            {/* Players */}
+            {results.players && results.players.length > 0 && (
+              <div className="mb-2">
+                <p className="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase">{language === 'pl' ? 'Zawodnicy' : 'Players'}</p>
+                <div>
+                  {results.players.map((p: any) => (
+                    <div
+                      key={`p-${p.id}`}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => {
+                        setOpen(false);
+                        window.location.href = `/players/${p.id}`;
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          setOpen(false);
+                          window.location.href = `/players/${p.id}`;
+                        }
+                      }}
+                      className="block px-2 py-1 text-sm hover:bg-muted rounded cursor-pointer"
+                    >
+                      {p.firstName} {p.lastName}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Clubs */}
+            {results.clubs && results.clubs.length > 0 && (
+              <div className="mb-2">
+                <p className="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase">{language === 'pl' ? 'Kluby' : 'Clubs'}</p>
+                <div>
+                  {results.clubs.map((c: any) => (
+                    <div
+                      key={`c-${c.id}`}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => {
+                        setOpen(false);
+                        window.location.href = `/clubs/${c.id}`;
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          setOpen(false);
+                          window.location.href = `/clubs/${c.id}`;
+                        }
+                      }}
+                      className="block px-2 py-1 text-sm hover:bg-muted rounded cursor-pointer"
+                    >
+                      {c.name}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Leagues */}
+            {results.leagues && results.leagues.length > 0 && (
+              <div className="mb-2">
+                <p className="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase">{language === 'pl' ? 'Ligi' : 'Leagues'}</p>
+                <div>
+                  {results.leagues.map((l: any) => (
+                    <div
+                      key={`l-${l.id}`}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => {
+                        setOpen(false);
+                        window.location.href = `/leagues/${l.slug}`;
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          setOpen(false);
+                          window.location.href = `/leagues/${l.slug}`;
+                        }
+                      }}
+                      className="block px-2 py-1 text-sm hover:bg-muted rounded cursor-pointer"
+                    >
+                      {l.name}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Agents */}
+            {results.agents && results.agents.length > 0 && (
+              <div className="mb-0">
+                <p className="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase">{language === 'pl' ? 'Agenci' : 'Agents'}</p>
+                <div>
+                  {results.agents.map((a: any) => (
+                    <div
+                      key={`a-${a.id}`}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => {
+                        setOpen(false);
+                        window.location.href = `/agent/${a.id}`;
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          setOpen(false);
+                          window.location.href = `/agent/${a.id}`;
+                        }
+                      }}
+                      className="block px-2 py-1 text-sm hover:bg-muted rounded cursor-pointer"
+                    >
+                      {a.name}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
