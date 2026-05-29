@@ -22,11 +22,10 @@ type LocalizedLabel = {
 const secondaryNav = [
   {
     label: { pl: 'Transfery', en: 'Transfers' },
-    href: '/transfery',
+    href: '/transfers',
     sub: [
-      { label: { pl: 'Transfery definitywne', en: 'Permanent transfers' }, href: '/transfery/definitywne' },
-      { label: { pl: 'Plotki transferowe', en: 'Transfer rumours' }, href: '/transfery/plotki' },
-      { label: { pl: 'Historyczne okienka', en: 'Historical windows' }, href: '/transfery/okienka' },
+      { label: { pl: 'Transfery definitywne', en: 'Permanent transfers' }, href: '/transfers' },
+      { label: { pl: 'Plotki transferowe', en: 'Transfer rumours' }, href: '/transfers/rumours' },
     ],
   },
   {
