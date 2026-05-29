@@ -173,7 +173,8 @@ export async function getClubValuations(input: GetClubValuationsInput): Promise<
     ...(leagueId && { leagueId }),
   };
 
-  const clubs = await prisma.club.findMany({
+  // Pobieramy wszystkie kluby (lub filtrowane po lidze), aby móc je posortować po wyliczonej wartości
+  const allClubs = await prisma.club.findMany({
     where,
     include: {
       players: {
@@ -187,43 +188,51 @@ export async function getClubValuations(input: GetClubValuationsInput): Promise<
         },
       },
     },
-    orderBy: {
-      players: {
-        _count: 'desc',
-      },
-    },
-    skip,
-    take,
   });
 
-  const total = await prisma.club.count({ where });
+  const total = allClubs.length;
 
-  const startRank = skip + 1;
-  const data = clubs.map((club, index) => {
+  // Obliczamy wartości i sortujemy
+  const clubsWithValues = allClubs.map((club) => {
     const totalValue = club.players.reduce((sum, p) => sum + Number(p.marketValue), 0);
     const avgValue = club.players.length > 0 ? totalValue / club.players.length : 0;
 
     return {
-      id: club.id,
-      rank: startRank + index,
-      name: club.name,
-      logoUrl: club.logoUrl,
-      squadsValue: formatEuroMillions(totalValue),
-      playerCount: club.players.length,
-      avgPlayerValue: formatEuroMillions(avgValue),
-      league: {
-        id: club.league.id,
-        name: club.league.name,
-        slug: club.league.slug,
-        logoUrl: club.league.logoUrl,
-      },
-      nationality: {
-        id: club.league.nationality.id,
-        name: club.league.nationality.name,
-        flagUrl: club.league.nationality.flagUrl,
-      },
+      ...club,
+      totalValueRaw: totalValue,
+      avgValue,
+      totalValueFormatted: formatEuroMillions(totalValue),
+      avgValueFormatted: formatEuroMillions(avgValue),
     };
   });
+
+  // Sortujemy malejąco po wartości rynkowej
+  clubsWithValues.sort((a, b) => b.totalValueRaw - a.totalValueRaw);
+
+  // Stronicujemy wynik
+  const paginatedClubs = clubsWithValues.slice(skip, skip + take);
+
+  const startRank = skip + 1;
+  const data = paginatedClubs.map((club, index) => ({
+    id: club.id,
+    rank: startRank + index,
+    name: club.name,
+    logoUrl: club.logoUrl,
+    squadsValue: club.totalValueFormatted,
+    playerCount: club.players.length,
+    avgPlayerValue: club.avgValueFormatted,
+    league: {
+      id: club.league.id,
+      name: club.league.name,
+      slug: club.league.slug,
+      logoUrl: club.league.logoUrl,
+    },
+    nationality: {
+      id: club.league.nationality.id,
+      name: club.league.nationality.name,
+      flagUrl: club.league.nationality.flagUrl,
+    },
+  }));
 
   return {
     data,

@@ -3,18 +3,17 @@ import { ArrowRight, Building2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { getClubValuations } from '@/lib/services/rankings';
 
-const clubs = [
-  { id: 'c1', name: 'Real Madrid', flag: '🇪🇸', league: 'La Liga', value: '€ 1.48 mld', valueNum: 1480 },
-  { id: 'c2', name: 'Manchester City', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', league: 'Premier League', value: '€ 1.35 mld', valueNum: 1350 },
-  { id: 'c3', name: 'Liverpool FC', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', league: 'Premier League', value: '€ 1.22 mld', valueNum: 1220 },
-  { id: 'c4', name: 'FC Barcelona', flag: '🇪🇸', league: 'La Liga', value: '€ 1.18 mld', valueNum: 1180 },
-  { id: 'c5', name: 'Bayern München', flag: '🇩🇪', league: 'Bundesliga', value: '€ 1.12 mld', valueNum: 1120 },
-];
+export async function TopClubs() {
+  const result = await getClubValuations({ page: 1, limit: 5 });
 
-const MAX = 1480;
+  if (result.data.length === 0) {
+    return null;
+  }
 
-export function TopClubs() {
+  const MAX = Math.max(...result.data.map((c) => parseInt(c.squadsValue.replace(/[^0-9]/g, '')) || 0)) || 1480;
+
   return (
     <Card className="bg-card/50 border-border/40">
       <CardHeader className="flex flex-row items-center justify-between pb-4">
@@ -29,29 +28,49 @@ export function TopClubs() {
         </Button>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        {clubs.map((c, i) => (
-          <Link key={c.id} href={`/klub/${c.id}`} className="group flex items-center gap-3">
-            <span className="w-5 text-xs font-bold text-muted-foreground text-right shrink-0">{i + 1}</span>
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-sky-600 to-sky-900 text-white text-xs font-bold">
-              {c.name
-                .split(' ')
-                .map((n) => n[0])
-                .join('')
-                .slice(0, 2)}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="text-sm font-medium text-foreground group-hover:text-emerald-400 transition-colors truncate">
-                  {c.flag} {c.name}
-                </span>
+        {result.data.map((c, i) => {
+          const valueNum = parseInt(c.squadsValue.replace(/[^0-9]/g, '')) || 0;
+          return (
+            <Link key={c.id} href={`/clubs/${c.id}`} className="group flex items-center gap-3">
+              <span className="w-5 text-xs font-bold text-muted-foreground text-right shrink-0">{i + 1}</span>
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full overflow-hidden">
+                {c.logoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={c.logoUrl} alt={c.name} className="h-full w-full object-contain" />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-sky-600 to-sky-900 text-white text-xs font-bold">
+                    {c.name
+                      .split(' ')
+                      .map((n) => n[0])
+                      .join('')
+                      .slice(0, 2)
+                      .toUpperCase()}
+                  </div>
+                )}
               </div>
-              <div className="flex items-center gap-2 mt-1">
-                <Progress value={(c.valueNum / MAX) * 100} className="h-1 flex-1 bg-muted [&>div]:bg-sky-500" />
-                <span className="shrink-0 text-xs font-semibold text-sky-400">{c.value}</span>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-foreground group-hover:text-emerald-400 transition-colors truncate">{c.name}</span>
+                </div>
+                <div className="flex items-center gap-1.5 mt-0.5 text-xs text-muted-foreground">
+                  {c.league.logoUrl ? (
+                    <div className="flex h-3.5 w-5 shrink-0 items-center justify-center overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={c.league.logoUrl} alt={c.league.name} className="h-full w-full object-contain" />
+                    </div>
+                  ) : (
+                    <div className="h-3.5 w-5 shrink-0 rounded-sm bg-muted" />
+                  )}
+                  <span className="truncate">{c.league.name}</span>
+                </div>
+                <div className="flex items-center justify-between mt-1">
+                  <Progress value={(valueNum / MAX) * 100} className="h-1 flex-1 bg-muted [&>div]:bg-sky-500" />
+                  <span className="ml-2 shrink-0 text-xs font-semibold text-sky-400">{c.squadsValue}</span>
+                </div>
               </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          );
+        })}
       </CardContent>
     </Card>
   );
