@@ -398,13 +398,6 @@ export function Navbar() {
 
           {/* Right: Login */}
           <div className="shrink-0 flex items-center gap-3">
-            <div className="hidden sm:inline-flex overflow-hidden rounded-md border border-border/60 bg-muted/40">
-              {languageOptions.map((option) => (
-                <button key={option.value} type="button" onClick={() => handleLanguageChange(option.value)} className={cn('px-2.5 py-1.5 text-xs font-semibold transition-colors', language === option.value ? 'bg-emerald-600 text-white' : 'text-muted-foreground hover:text-foreground')}>
-                  {option.label}
-                </button>
-              ))}
-            </div>
             {/* Mobile toggle */}
             <Button variant="ghost" size="icon" className="md:hidden text-muted-foreground" onClick={() => setMobileOpen(!mobileOpen)}>
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -442,14 +435,9 @@ export function Navbar() {
               </div>
             ))}
             <div className="pt-2 border-t border-border/40 mt-1">
-              <div className="mb-2 inline-flex overflow-hidden rounded-md border border-border/60 bg-muted/40">
-                {languageOptions.map((option) => (
-                  <button key={option.value} type="button" onClick={() => handleLanguageChange(option.value)} className={cn('px-2.5 py-1.5 text-xs font-semibold transition-colors', language === option.value ? 'bg-emerald-600 text-white' : 'text-muted-foreground hover:text-foreground')}>
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-              <Button className="w-full bg-emerald-600 hover:bg-emerald-500 text-white">{loginLabel}</Button>
+              <Link href="/admin" onClick={() => setMobileOpen(false)} className="block w-full text-center rounded-md bg-emerald-600 px-5 py-2 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors">
+                Panel Admina
+              </Link>
             </div>
           </nav>
         </div>
