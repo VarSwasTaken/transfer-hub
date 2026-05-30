@@ -379,8 +379,6 @@ export function Navbar() {
     window.dispatchEvent(new Event('language-changed'));
   }
 
-  const loginLabel = language === 'pl' ? 'Zaloguj się' : 'Log in';
-
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/40">
       {/* Primary bar */}
@@ -407,9 +405,6 @@ export function Navbar() {
                 </button>
               ))}
             </div>
-            <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white">
-              {loginLabel}
-            </Button>
             {/* Mobile toggle */}
             <Button variant="ghost" size="icon" className="md:hidden text-muted-foreground" onClick={() => setMobileOpen(!mobileOpen)}>
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
