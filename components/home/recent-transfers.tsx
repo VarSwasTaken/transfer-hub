@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getTransfersList } from '@/lib/services/transfers-list';
 import { ClubLogo, PlayerAvatar } from '@/components/media/entity-media';
+import { getPlayerPositionAbbreviation } from '@/lib/utils';
 
 export async function RecentTransfers() {
   const result = await getTransfersList({ page: 1, limit: 5 });
@@ -37,7 +38,10 @@ export async function RecentTransfers() {
   return (
     <Card className="bg-card/50 border-border/40">
       <CardHeader className="flex flex-row items-center justify-between pb-4">
-        <CardTitle className="text-base font-semibold">Ostatnie transfery</CardTitle>
+        <CardTitle className="flex items-center gap-2 text-base font-semibold">
+          <TrendingUp className="h-4 w-4 text-emerald-400" />
+          Ostatnie transfery
+        </CardTitle>
         <Button variant="ghost" size="sm" className="text-emerald-400 hover:text-emerald-300 -mr-2" asChild>
           <Link href="/transfers">
             Wszystkie <ArrowRight className="ml-1 h-3.5 w-3.5" />
@@ -54,7 +58,7 @@ export async function RecentTransfers() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium text-foreground group-hover:text-emerald-400 transition-colors truncate">{t.playerName}</span>
-                  <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded bg-muted text-muted-foreground">{t.playerPosition}</span>
+                  <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded bg-muted text-muted-foreground">{getPlayerPositionAbbreviation(t.playerPosition)}</span>
                 </div>
                 <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
                   <div className="flex items-center gap-1 min-w-0">

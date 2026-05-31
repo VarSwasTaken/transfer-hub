@@ -6,6 +6,13 @@ import { Badge } from '@/components/ui/badge';
 import { prisma } from '@/lib/prisma';
 import { PlayerAvatar } from '@/components/media/entity-media';
 
+const positionLabelPL: Record<string, string> = {
+  GOALKEEPER: 'Bramkarz',
+  DEFENDER: 'Obrońca',
+  MIDFIELDER: 'Pomocnik',
+  FORWARD: 'Napastnik',
+};
+
 export async function BiggestTransfer() {
   // Pobierz największy transfer
   const transfer = await prisma.transfer.findFirst({
@@ -40,7 +47,7 @@ export async function BiggestTransfer() {
   return (
     <div className="rounded-xl overflow-hidden border border-emerald-500/20 bg-linear-to-r from-emerald-950/60 to-card/60 relative">
       <div className="absolute inset-0 opacity-10">
-        <Image src="/images/transfer-bg.jpg" alt="" fill className="object-cover object-center" />
+        <Image src="/images/transfers-background.jpeg" alt="" fill className="object-cover object-center" />
       </div>
       <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5">
         <div className="flex items-center gap-3">
@@ -54,7 +61,7 @@ export async function BiggestTransfer() {
               {player.firstName} {player.lastName} &rarr; {transfer.toClub?.name}
             </p>
             <p className="text-sm text-muted-foreground mt-1">
-              {transfer.fromClub?.name} • {player.position}
+              {transfer.fromClub?.name} &middot; {positionLabelPL[player.position] ?? player.position}
             </p>
           </div>
         </div>

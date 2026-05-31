@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { prisma } from '@/lib/prisma';
 import { listTransferRumors } from '@/lib/services/transfer-rumors';
 import { ClubLogo, PlayerAvatar } from '@/components/media/entity-media';
+import { getPlayerPositionAbbreviation } from '@/lib/utils';
 
 function ReliabilityBar({ value: credibility }: { value: string }) {
   const numValue = credibility === 'High' ? 85 : credibility === 'Low' ? 40 : 65;
@@ -69,7 +70,7 @@ export async function HotRumours() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium text-foreground group-hover:text-emerald-400 transition-colors truncate">{player ? `${player.firstName} ${player.lastName}` : `Zawodnik #${r.playerId}`}</span>
-                    <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded bg-muted text-muted-foreground">{player?.position || 'N/A'}</span>
+                    <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded bg-muted text-muted-foreground">{player ? getPlayerPositionAbbreviation(player.position) : 'N/A'}</span>
                   </div>
                   <div className="flex items-center gap-1 mt-0.5 text-xs text-muted-foreground">
                     {fromClub && (

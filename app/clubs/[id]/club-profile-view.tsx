@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { ClubLogo, PlayerAvatar } from '@/components/media/entity-media';
 import { SquadValueChart } from '@/components/club/squad-value-chart';
 import { normalizeLanguage, pickLocalizedName, getTranslations, type Language } from '@/lib/i18n';
+import { getPlayerPositionAbbreviation } from '@/lib/utils';
 
 type ClubProfileTranslations = ReturnType<typeof getTranslations>['clubProfile'] & {
   incomingTransfers: string;
@@ -42,6 +43,7 @@ type ClubProfileData = {
     shirtNumber: number;
     position: 'GOALKEEPER' | 'DEFENDER' | 'MIDFIELDER' | 'FORWARD';
     marketValue: string | null;
+    imageUrl?: string | null;
     nationality: {
       id: number;
       name: string;
@@ -360,11 +362,11 @@ export function ClubProfileView({ club, initialLanguage = 'pl' }: { club: ClubPr
                           return (
                             <Link key={player.id} href={`/players/${player.id}`} className="group flex items-center gap-4 px-4 py-3 transition-colors hover:bg-muted/30">
                               <span className={`w-9 shrink-0 text-right text-xs font-bold ${textClasses.text}`}>#{player.shirtNumber}</span>
-                              <PlayerAvatar name={playerName} firstName={player.firstName} lastName={player.lastName} imageUrl={player.imageUrl} tone={playerToneByPosition[player.position]} className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full text-xs font-bold text-white" imageClassName="h-full w-full object-cover object-center" />
+                              <PlayerAvatar name={playerName} firstName={player.firstName} lastName={player.lastName} imageUrl={player.imageUrl ?? null} tone={playerToneByPosition[player.position]} className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full text-xs font-bold text-white" imageClassName="h-full w-full object-cover object-center" />
                               <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-2">
                                   <span className={`truncate text-sm font-medium text-foreground transition-colors ${textClasses.hover}`}>{playerName}</span>
-                                  <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-[10px] font-bold text-muted-foreground">{t.positionLabels[player.position]}</span>
+                                  <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-[10px] font-bold text-muted-foreground">{getPlayerPositionAbbreviation(player.position)}</span>
                                 </div>
                                 <div className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
                                   {player.nationality?.flagUrl ? (

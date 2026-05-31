@@ -33,6 +33,7 @@ type ClubProfileData = {
     shirtNumber: number;
     position: 'GOALKEEPER' | 'DEFENDER' | 'MIDFIELDER' | 'FORWARD';
     marketValue: string | null;
+    imageUrl?: string | null;
     nationality: {
       id: number;
       name: string;

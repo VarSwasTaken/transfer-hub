@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { getTopPlayers } from '@/lib/services/rankings';
 import { PlayerAvatar } from '@/components/media/entity-media';
+import { getPlayerPositionAbbreviation } from '@/lib/utils';
 
 export async function TopPlayers() {
   const result = await getTopPlayers({ page: 1, limit: 5 });
@@ -14,25 +15,6 @@ export async function TopPlayers() {
   }
 
   const MAX = Math.max(...result.data.map((p) => (p.marketValue ? parseInt(p.marketValue.replace(/[^0-9]/g, '')) : 0))) || 180;
-
-  const getPositionAbbr = (pos: string) => {
-    const abbr: Record<string, string> = {
-      Goalkeeper: 'GK',
-      Defender: 'DEF',
-      Midfielder: 'MID',
-      Forward: 'FW',
-      Attacker: 'FW',
-      'Center Back': 'CB',
-      'Left Back': 'LB',
-      'Right Back': 'RB',
-      'Defensive Midfielder': 'CDM',
-      'Central Midfielder': 'CM',
-      'Attacking Midfielder': 'CAM',
-      'Left Winger': 'LW',
-      'Right Winger': 'RW',
-    };
-    return abbr[pos] || pos.substring(0, 3).toUpperCase();
-  };
 
   return (
     <Card className="bg-card/50 border-border/40">
@@ -59,7 +41,7 @@ export async function TopPlayers() {
                   <span className="text-sm font-medium text-foreground group-hover:text-emerald-400 transition-colors truncate">
                     {p.firstName} {p.lastName}
                   </span>
-                  <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded bg-muted text-muted-foreground">{getPositionAbbr(p.position)}</span>
+                  <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded bg-muted text-muted-foreground">{getPlayerPositionAbbreviation(p.position)}</span>
                 </div>
                 <div className="flex items-center gap-1.5 mt-0.5 text-xs text-muted-foreground">
                   {p.nationality?.flagUrl ? (

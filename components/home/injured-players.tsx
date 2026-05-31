@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { listInjuries } from '@/lib/services/injuries';
 import { prisma } from '@/lib/prisma';
 import { PlayerAvatar } from '@/components/media/entity-media';
+import { getPlayerPositionAbbreviation } from '@/lib/utils';
 
 export async function InjuredPlayers() {
   const { items } = await listInjuries({ page: 1, limit: 5 });
@@ -62,7 +63,7 @@ export async function InjuredPlayers() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
                     <span className="text-sm font-medium text-foreground group-hover:text-emerald-400 transition-colors truncate">{player ? `${player.firstName} ${player.lastName}` : `Zawodnik #${p.playerId}`}</span>
-                    <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded bg-muted text-muted-foreground">{player?.position || 'N/A'}</span>
+                    <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded bg-muted text-muted-foreground">{player ? getPlayerPositionAbbreviation(player.position) : 'N/A'}</span>
                   </div>
                   <div className="flex items-center gap-2 mt-0.5">
                     <span className="text-xs text-muted-foreground">

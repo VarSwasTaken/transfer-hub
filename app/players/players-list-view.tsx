@@ -9,6 +9,7 @@ import { ArrowLeft, ArrowRight, Search, Filter, X } from 'lucide-react';
 import { normalizeLanguage, type Language } from '@/lib/i18n';
 import { useEffect } from 'react';
 import { ClubLogo, PlayerAvatar } from '@/components/media/entity-media';
+import { getPlayerPositionAbbreviation } from '@/lib/utils';
 
 type PlayerListItem = {
   id: number;
@@ -196,10 +197,7 @@ export function PlayersListView({ players, meta }: { players: PlayerListItem[]; 
     return `€${num}`;
   };
 
-  const getPositionLabel = (position: string) => {
-    const pos = POSITIONS.find((p) => p.value === position);
-    return language === 'pl' ? pos?.labelPL : pos?.labelEN;
-  };
+  const getPositionLabel = (position: string) => getPlayerPositionAbbreviation(position);
 
   const getInitials = (firstName: string, lastName: string) => {
     return `${firstName?.[0] ?? ''}${lastName?.[0] ?? ''}`.toUpperCase() || '??';

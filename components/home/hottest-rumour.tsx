@@ -6,6 +6,13 @@ import { prisma } from '@/lib/prisma';
 import { listTransferRumors } from '@/lib/services/transfer-rumors';
 import { PlayerAvatar } from '@/components/media/entity-media';
 
+const positionLabelPL: Record<string, string> = {
+  GOALKEEPER: 'Bramkarz',
+  DEFENDER: 'Obrońca',
+  MIDFIELDER: 'Pomocnik',
+  FORWARD: 'Napastnik',
+};
+
 export async function HottestRumour() {
   const { items } = await listTransferRumors({ page: 1, limit: 1 });
 
@@ -35,7 +42,7 @@ export async function HottestRumour() {
   return (
     <div className="rounded-xl overflow-hidden border border-orange-500/20 bg-linear-to-r from-orange-950/60 to-card/60 relative">
       <div className="absolute inset-0 opacity-10">
-        <Image src="/images/transfer-bg.jpg" alt="" fill className="object-cover object-center" />
+        <Image src="/images/hottest-rumour-background.jpg" alt="" fill className="object-cover object-center" />
       </div>
       <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5">
         <div className="flex items-center gap-3">
@@ -48,8 +55,12 @@ export async function HottestRumour() {
             <p className="font-bold text-foreground">
               {playerName} &rarr; {toClubName}
             </p>
-            <p className="text-sm text-muted-foreground">
-              {fromClubName} &middot; {player?.position ?? 'N/A'} &middot; wiarygodność: {credibilityPercent}%
+            <p className="text-sm text-muted-foreground flex items-center gap-1.5 flex-wrap mt-1">
+              <span>{fromClubName}</span>
+              <span>&middot;</span>
+              <span>{player ? positionLabelPL[player.position] ?? player.position : 'N/A'}</span>
+              <span>&middot;</span>
+              <span>wiarygodność: {credibilityPercent}%</span>
             </p>
           </div>
         </div>

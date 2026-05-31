@@ -7,67 +7,56 @@ import { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Search, Menu, X, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { normalizeLanguage, type Language } from '@/lib/i18n';
-
-const languageOptions = [
-  { label: 'PL', value: 'pl' },
-  { label: 'EN', value: 'en' },
-] as const;
-
-type LocalizedLabel = {
-  pl: string;
-  en: string;
-};
 
 const secondaryNav = [
   {
-    label: { pl: 'Transfery', en: 'Transfers' },
+    label: 'Transfery',
     href: '/transfers',
     sub: [
-      { label: { pl: 'Transfery definitywne', en: 'Permanent transfers' }, href: '/transfers' },
-      { label: { pl: 'Plotki transferowe', en: 'Transfer rumours' }, href: '/transfers/rumours' },
+      { label: 'Transfery definitywne', href: '/transfers' },
+      { label: 'Plotki transferowe', href: '/transfers/rumours' },
     ],
   },
   {
-    label: { pl: 'Rankingi', en: 'Rankings' },
+    label: 'Rankingi',
     href: '/rankings',
     sub: [
-      { label: { pl: 'Najdrożsi zawodnicy', en: 'Most expensive players' }, href: '/rankings/most-expensive-players' },
-      { label: { pl: 'Najdroższe kluby', en: 'Most expensive clubs' }, href: '/rankings/most-expensive-clubs' },
+      { label: 'Najdrożsi zawodnicy', href: '/rankings/most-expensive-players' },
+      { label: 'Najdroższe kluby', href: '/rankings/most-expensive-clubs' },
     ],
   },
   {
-    label: { pl: 'Ligi', en: 'Leagues' },
+    label: 'Ligi',
     href: '/leagues',
     sub: [
-      { label: { pl: 'Premier League', en: 'Premier League' }, href: '/leagues/premier-league' },
-      { label: { pl: 'La Liga', en: 'La Liga' }, href: '/leagues/la-liga' },
-      { label: { pl: 'Bundesliga', en: 'Bundesliga' }, href: '/leagues/bundesliga' },
-      { label: { pl: 'Serie A', en: 'Serie A' }, href: '/leagues/serie-a' },
-      { label: { pl: 'Ligue 1', en: 'Ligue 1' }, href: '/leagues/ligue-1' },
-      { label: { pl: 'Ekstraklasa', en: 'Ekstraklasa' }, href: '/leagues/ekstraklasa' },
-      { label: { pl: 'Więcej lig...', en: 'More leagues...' }, href: '/leagues' },
+      { label: 'Premier League', href: '/leagues/premier-league' },
+      { label: 'La Liga', href: '/leagues/la-liga' },
+      { label: 'Bundesliga', href: '/leagues/bundesliga' },
+      { label: 'Serie A', href: '/leagues/serie-a' },
+      { label: 'Ligue 1', href: '/leagues/ligue-1' },
+      { label: 'Ekstraklasa', href: '/leagues/ekstraklasa' },
+      { label: 'Więcej lig...', href: '/leagues' },
     ],
   },
   {
-    label: { pl: 'Zawodnicy', en: 'Players' },
+    label: 'Zawodnicy',
     href: '/players',
     sub: [
-      { label: { pl: 'Przeglądaj zawodników', en: 'Browse players' }, href: '/players' },
-      { label: { pl: 'Wolni agenci', en: 'Free agents' }, href: '/free-agents' },
+      { label: 'Przeglądaj zawodników', href: '/players' },
+      { label: 'Wolni agenci', href: '/free-agents' },
     ],
   },
 ];
 
 const searchScopes = [
-  { label: { pl: 'Wszystko', en: 'All' }, value: 'all' },
-  { label: { pl: 'Zawodnicy', en: 'Players' }, value: 'zawodnicy' },
-  { label: { pl: 'Kluby', en: 'Clubs' }, value: 'kluby' },
-  { label: { pl: 'Agenci', en: 'Agents' }, value: 'agenci' },
-  { label: { pl: 'Ligi', en: 'Leagues' }, value: 'ligi' },
+  { label: 'Wszystko', value: 'all' },
+  { label: 'Zawodnicy', value: 'zawodnicy' },
+  { label: 'Kluby', value: 'kluby' },
+  { label: 'Agenci', value: 'agenci' },
+  { label: 'Ligi', value: 'ligi' },
 ];
 
-function SearchBar({ className, language }: { className?: string; language: Language }) {
+function SearchBar({ className }: { className?: string }) {
   const [scope, setScope] = useState(searchScopes[0]);
   const [scopeOpen, setScopeOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -77,7 +66,7 @@ function SearchBar({ className, language }: { className?: string; language: Lang
   const dropRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const debounceRef = useRef<number | null>(null);
-  const router = useRouter();
+  useRouter();
 
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
@@ -140,7 +129,7 @@ function SearchBar({ className, language }: { className?: string; language: Lang
   }, [query, scope]);
 
   function mapLabelForPlaceholder() {
-    return language === 'pl' ? `Szukaj ${scope.value === 'all' ? 'zawodników, klubów, lig...' : scope.label.pl.toLowerCase() + '...'}` : `Search ${scope.value === 'all' ? 'players, clubs, leagues...' : scope.label.en.toLowerCase() + '...'}`;
+    return `Szukaj ${scope.value === 'all' ? 'zawodników, klubów, lig...' : `${scope.label.toLowerCase()}...`}`;
   }
 
   return (
@@ -154,11 +143,11 @@ function SearchBar({ className, language }: { className?: string; language: Lang
           }}
           className="flex cursor-pointer items-center gap-1 px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground border-r border-border/60 whitespace-nowrap transition-colors"
         >
-          {scope.label[language]}
+          {scope.label}
           <ChevronDown className="h-3 w-3" />
         </button>
         {scopeOpen && (
-          <div className="absolute top-full left-0 mt-1 w-36 rounded-md border border-border/60 bg-popover shadow-lg z-[9999] py-1">
+          <div className="absolute top-full left-0 z-9999 mt-1 w-36 rounded-md border border-border/60 bg-popover py-1 shadow-lg">
             {searchScopes.map((s) => (
               <button
                 key={s.value}
@@ -169,7 +158,7 @@ function SearchBar({ className, language }: { className?: string; language: Lang
                 }}
                 className={cn('w-full cursor-pointer text-left px-3 py-1.5 text-sm transition-colors hover:bg-muted', scope.value === s.value ? 'text-emerald-400' : 'text-muted-foreground')}
               >
-                {s.label[language]}
+                {s.label}
               </button>
             ))}
           </div>
@@ -205,7 +194,7 @@ function SearchBar({ className, language }: { className?: string; language: Lang
             {/* Players */}
             {results.players && results.players.length > 0 && (
               <div className="mb-2">
-                <p className="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase">{language === 'pl' ? 'Zawodnicy' : 'Players'}</p>
+                <p className="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase">Zawodnicy</p>
                 <div>
                   {results.players.map((p: any) => (
                     <div
@@ -234,7 +223,7 @@ function SearchBar({ className, language }: { className?: string; language: Lang
             {/* Clubs */}
             {results.clubs && results.clubs.length > 0 && (
               <div className="mb-2">
-                <p className="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase">{language === 'pl' ? 'Kluby' : 'Clubs'}</p>
+                <p className="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase">Kluby</p>
                 <div>
                   {results.clubs.map((c: any) => (
                     <div
@@ -263,7 +252,7 @@ function SearchBar({ className, language }: { className?: string; language: Lang
             {/* Leagues */}
             {results.leagues && results.leagues.length > 0 && (
               <div className="mb-2">
-                <p className="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase">{language === 'pl' ? 'Ligi' : 'Leagues'}</p>
+                <p className="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase">Ligi</p>
                 <div>
                   {results.leagues.map((l: any) => (
                     <div
@@ -292,7 +281,7 @@ function SearchBar({ className, language }: { className?: string; language: Lang
             {/* Agents */}
             {results.agents && results.agents.length > 0 && (
               <div className="mb-0">
-                <p className="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase">{language === 'pl' ? 'Agenci' : 'Agents'}</p>
+                <p className="px-2 py-1 text-xs font-semibold text-muted-foreground uppercase">Agenci</p>
                 <div>
                   {results.agents.map((a: any) => (
                     <div
@@ -324,7 +313,7 @@ function SearchBar({ className, language }: { className?: string; language: Lang
   );
 }
 
-function SecondaryNavItem({ item, pathname, language }: { item: (typeof secondaryNav)[0]; pathname: string; language: Language }) {
+function SecondaryNavItem({ item, pathname }: { item: (typeof secondaryNav)[0]; pathname: string }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -341,7 +330,7 @@ function SecondaryNavItem({ item, pathname, language }: { item: (typeof secondar
   return (
     <div className="relative" ref={ref}>
       <button onClick={() => setOpen(!open)} className={cn('flex cursor-pointer items-center gap-1 px-4 py-2.5 text-sm font-medium transition-colors hover:text-foreground whitespace-nowrap', isActive ? 'text-emerald-400' : 'text-muted-foreground')}>
-        {item.label[language]}
+        {item.label}
         <ChevronDown className={cn('h-3 w-3 transition-transform', open && 'rotate-180')} />
       </button>
 
@@ -349,7 +338,7 @@ function SecondaryNavItem({ item, pathname, language }: { item: (typeof secondar
         <div className="absolute top-full left-0 mt-1 w-52 rounded-md border border-border/60 bg-popover shadow-xl z-50 py-1">
           {item.sub.map((sub) => (
             <Link key={sub.href} href={sub.href} onClick={() => setOpen(false)} className={cn('block cursor-pointer px-4 py-2 text-sm transition-colors hover:bg-muted', pathname === sub.href ? 'text-emerald-400' : 'text-muted-foreground hover:text-foreground')}>
-              {sub.label[language]}
+              {sub.label}
             </Link>
           ))}
         </div>
@@ -361,23 +350,6 @@ function SecondaryNavItem({ item, pathname, language }: { item: (typeof secondar
 export function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [language, setLanguage] = useState<Language>('pl');
-
-  useEffect(() => {
-    const stored = typeof window !== 'undefined' ? localStorage.getItem('ui-language') : null;
-    const normalized = normalizeLanguage(stored);
-    setLanguage(normalized);
-    document.documentElement.lang = normalized;
-  }, []);
-
-  function handleLanguageChange(nextLanguage: Language) {
-    setLanguage(nextLanguage);
-    localStorage.setItem('ui-language', nextLanguage);
-    document.documentElement.lang = nextLanguage;
-    document.cookie = `ui-language=${nextLanguage}; path=/; max-age=31536000; samesite=lax`;
-    // Emit event dla client components
-    window.dispatchEvent(new Event('language-changed'));
-  }
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/40">
@@ -393,7 +365,7 @@ export function Navbar() {
 
           {/* Centered search */}
           <div className="flex-1 flex justify-center px-4">
-            <SearchBar className="w-full max-w-xl" language={language} />
+            <SearchBar className="w-full max-w-xl" />
           </div>
 
           {/* Right: Login */}
@@ -411,7 +383,7 @@ export function Navbar() {
         <div className="mx-auto max-w-7xl px-4">
           <nav className="flex w-full items-center justify-center gap-2 py-1">
             {secondaryNav.map((item) => (
-              <SecondaryNavItem key={item.href} item={item} pathname={pathname} language={language} />
+              <SecondaryNavItem key={item.href} item={item} pathname={pathname} />
             ))}
           </nav>
         </div>
@@ -422,14 +394,14 @@ export function Navbar() {
         <div className="md:hidden border-t border-border/40 bg-background/95 backdrop-blur-md">
           <nav className="mx-auto max-w-7xl px-4 py-3 flex flex-col gap-1">
             <div className="mb-2">
-              <SearchBar language={language} />
+              <SearchBar />
             </div>
             {secondaryNav.map((item) => (
               <div key={item.href}>
-                <p className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{item.label[language]}</p>
+                <p className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">{item.label}</p>
                 {item.sub.map((sub) => (
                   <Link key={sub.href} href={sub.href} onClick={() => setMobileOpen(false)} className="block cursor-pointer rounded-md px-5 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors">
-                    {sub.label[language]}
+                    {sub.label}
                   </Link>
                 ))}
               </div>

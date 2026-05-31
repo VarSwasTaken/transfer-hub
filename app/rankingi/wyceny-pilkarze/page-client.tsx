@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { normalizeLanguage, getTranslations, type Language } from '@/lib/i18n';
 import { ArrowLeft, ArrowRight, Filter, X } from 'lucide-react';
 import { ClubLogo, PlayerAvatar } from '@/components/media/entity-media';
+import { getPlayerPositionAbbreviation } from '@/lib/utils';
 
 import type { PlayerValuationItem } from '@/lib/services/rankings';
 
@@ -149,7 +150,7 @@ export default function PlayerValuationsPage() {
           {selectedPosition && (
             <div className="mt-4 flex flex-wrap gap-2">
               <Badge variant="secondary" className="gap-1">
-                {POSITION_NAMES[selectedPosition][language]}
+                {selectedPosition}
                 <button onClick={clearFilters} className="ml-1 hover:text-foreground">
                   <X className="h-3 w-3" />
                 </button>
@@ -201,7 +202,9 @@ export default function PlayerValuationsPage() {
                           </span>
                         </Link>
                       </td>
-                      <td className="px-4 py-3 text-sm">{POSITION_NAMES[player.position][language]}</td>
+                      <td className="px-4 py-3 text-sm">
+                        <span className="inline-block rounded bg-muted px-2 py-1 text-xs font-semibold text-muted-foreground">{getPlayerPositionAbbreviation(player.position)}</span>
+                      </td>
                       <td className="px-4 py-3">
                         {player.club ? (
                           <Link href={`/clubs/${player.club.id}`} className="flex items-center gap-2 group text-sm text-foreground hover:text-emerald-400 transition-colors">

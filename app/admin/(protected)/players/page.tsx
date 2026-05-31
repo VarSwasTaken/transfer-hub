@@ -4,6 +4,7 @@ import { Edit, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { deletePlayerAction } from './actions';
 import { DeleteButton } from '@/components/admin/delete-button';
 import { AdminSearchInput } from '@/components/admin/admin-search-input';
+import { getPlayerPositionAbbreviation } from '@/lib/utils';
 
 const PAGE_SIZE = 10;
 
@@ -29,13 +30,6 @@ export default async function PlayersPage({ searchParams }: { searchParams: Prom
     }),
   ]);
   const totalPages = Math.ceil(totalCount / PAGE_SIZE) || 1;
-
-  const positionMap: Record<string, string> = {
-    GOALKEEPER: 'Bramkarz',
-    DEFENDER: 'Obrońca',
-    MIDFIELDER: 'Pomocnik',
-    FORWARD: 'Napastnik',
-  };
 
   return (
     <div>
@@ -92,7 +86,7 @@ export default async function PlayersPage({ searchParams }: { searchParams: Prom
                 <td className="px-6 py-4 text-muted-foreground">
                   {item.club?.name || 'Brak klubu'} <span className="text-foreground ml-1">({item.shirtNumber})</span>
                 </td>
-                <td className="px-6 py-4">{positionMap[item.position] || item.position}</td>
+                <td className="px-6 py-4">{getPlayerPositionAbbreviation(item.position)}</td>
                 <td className="px-6 py-4 text-right">
                   <div className="flex justify-end gap-3">
                     <Link href={`/admin/players/${item.id}/edit`} className="text-blue-500 hover:text-blue-400">

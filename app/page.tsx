@@ -27,19 +27,6 @@ export default function HomePage() {
               <span className="text-emerald-400"> w jednym miejscu</span>
             </h1>
             <p className="text-base text-muted-foreground leading-relaxed mb-6 max-w-xl">Śledź transfery, monitoruj wyceny zawodników i analizuj rynek piłkarski w czasie rzeczywistym.</p>
-            <div className="flex flex-wrap gap-2 items-center">
-              <span className="text-xs text-muted-foreground">Popularne:</span>
-              {[
-                { label: 'Wolni agenci', href: '/free-agents' },
-                { label: 'Ekstraklasa', href: '/leagues' },
-                { label: 'Premier League', href: '/leagues' },
-                { label: 'Rankingi', href: '/rankings' },
-              ].map((link) => (
-                <Link key={link.label} href={link.href} className="text-xs rounded-full border border-border/50 bg-card/50 px-3 py-1 text-muted-foreground hover:text-emerald-400 hover:border-emerald-500/40 transition-colors">
-                  {link.label}
-                </Link>
-              ))}
-            </div>
           </div>
         </div>
       </section>
