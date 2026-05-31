@@ -51,7 +51,7 @@ export async function BiggestTransfer() {
       </div>
       <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5">
         <div className="flex items-center gap-3">
-          <PlayerAvatar firstName={player.firstName} lastName={player.lastName} imageUrl={player.imageUrl} className="flex h-14 w-10 shrink-0 items-center justify-center overflow-hidden rounded" />
+          <PlayerAvatar firstName={player.firstName} lastName={player.lastName} imageUrl={player.imageUrl} className="flex h-12 w-9 shrink-0 items-center justify-center overflow-hidden rounded" imageClassName="h-full w-full object-cover object-center" />
           <div>
             <p className="text-xs text-emerald-400 font-medium uppercase tracking-wider flex items-center gap-1">
               <TrendingUp className="h-3 w-3" />

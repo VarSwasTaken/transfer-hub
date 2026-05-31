@@ -215,7 +215,7 @@ export function PlayerProfileView({ player }: { player: PlayerProfileData | null
                 <p className="mb-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">{t.currentClub}</p>
                 {player.club ? (
                   <div className="flex items-center gap-2">
-                    <ClubLogo name={player.club.name} logoUrl={player.club.logoUrl} className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-3.5 w-3.5 text-muted-foreground" />
+                    <ClubLogo name={player.club.name} logoUrl={player.club.logoUrl} className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center" iconClassName="h-3.5 w-3.5 text-muted-foreground" />
                     <Link href={`/clubs/${player.club.id}`} className="text-base font-bold text-foreground transition-colors hover:text-emerald-400">
                       {player.club.name}
                     </Link>
@@ -290,7 +290,7 @@ export function PlayerProfileView({ player }: { player: PlayerProfileData | null
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-1.5 text-sm">
                           <span className="inline-flex items-center gap-1.5 text-muted-foreground">
-                            <ClubLogo name={transfer.fromClub?.name ?? t.noFromClub} logoUrl={transfer.fromClub?.logoUrl ?? null} className="flex h-4 w-4 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-2.5 w-2.5 text-muted-foreground" />
+                            <ClubLogo name={transfer.fromClub?.name ?? t.noFromClub} logoUrl={transfer.fromClub?.logoUrl ?? null} className="flex h-4 w-4 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center" iconClassName="h-2.5 w-2.5 text-muted-foreground" />
                             {transfer.fromClub ? (
                               <Link href={`/clubs/${transfer.fromClub.id}`} className="transition-colors hover:text-emerald-400">
                                 {transfer.fromClub.name}
@@ -301,7 +301,7 @@ export function PlayerProfileView({ player }: { player: PlayerProfileData | null
                           </span>
                           <ArrowRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                           <span className="inline-flex items-center gap-1.5 font-medium text-foreground">
-                            <ClubLogo name={transfer.toClub.name} logoUrl={transfer.toClub.logoUrl} className="flex h-4 w-4 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-2.5 w-2.5 text-muted-foreground" />
+                            <ClubLogo name={transfer.toClub.name} logoUrl={transfer.toClub.logoUrl} className="flex h-4 w-4 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center" iconClassName="h-2.5 w-2.5 text-muted-foreground" />
                             <Link href={`/clubs/${transfer.toClub.id}`} className="transition-colors hover:text-emerald-400">
                               {transfer.toClub.name}
                             </Link>

@@ -246,7 +246,7 @@ export function ClubProfileView({ club, initialLanguage = 'pl' }: { club: ClubPr
     <main className="mx-auto max-w-7xl px-4 py-8">
       <div className="mb-8 rounded-xl border border-border/40 bg-card/50 p-6">
         <div className="flex flex-col items-start gap-6 sm:flex-row">
-          <ClubLogo name={club.name} logoUrl={logoSrc} className="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-2" iconClassName="h-10 w-10 text-muted-foreground" />
+          <ClubLogo name={club.name} logoUrl={logoSrc} className="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center" iconClassName="h-10 w-10 text-muted-foreground" />
 
           <div className="min-w-0 flex-1">
             <div className="mb-1 flex flex-wrap items-center gap-2">
@@ -362,7 +362,7 @@ export function ClubProfileView({ club, initialLanguage = 'pl' }: { club: ClubPr
                           return (
                             <Link key={player.id} href={`/players/${player.id}`} className="group flex items-center gap-4 px-4 py-3 transition-colors hover:bg-muted/30">
                               <span className={`w-9 shrink-0 text-right text-xs font-bold ${textClasses.text}`}>#{player.shirtNumber}</span>
-                              <PlayerAvatar name={playerName} firstName={player.firstName} lastName={player.lastName} imageUrl={player.imageUrl ?? null} tone={playerToneByPosition[player.position]} className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full text-xs font-bold text-white" imageClassName="h-full w-full object-cover object-center" />
+                              <PlayerAvatar name={playerName} firstName={player.firstName} lastName={player.lastName} imageUrl={player.imageUrl ?? null} tone={playerToneByPosition[player.position]} className="flex h-12 w-9 shrink-0 items-center justify-center overflow-hidden rounded text-xs font-bold text-white" imageClassName="h-full w-full object-cover object-center" />
                               <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-2">
                                   <span className={`truncate text-sm font-medium text-foreground transition-colors ${textClasses.hover}`}>{playerName}</span>
@@ -424,7 +424,7 @@ export function ClubProfileView({ club, initialLanguage = 'pl' }: { club: ClubPr
                           </p>
                           <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
                             <span className="inline-flex items-center gap-1 rounded-full border border-border/40 bg-background/70 px-2 py-0.5">
-                              <ClubLogo name={transfer.fromClub?.name ?? t.noClub} logoUrl={transfer.fromClub?.logoUrl ?? null} className="flex h-3.5 w-3.5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-2.5 w-2.5 text-muted-foreground" />
+                              <ClubLogo name={transfer.fromClub?.name ?? t.noClub} logoUrl={transfer.fromClub?.logoUrl ?? null} className="flex h-3.5 w-3.5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center" iconClassName="h-2.5 w-2.5 text-muted-foreground" />
                               {transfer.fromClub ? (
                                 <Link href={`/clubs/${transfer.fromClub.id}`} className="max-w-40 truncate transition-colors hover:text-foreground">
                                   {transfer.fromClub.name}
@@ -486,7 +486,7 @@ export function ClubProfileView({ club, initialLanguage = 'pl' }: { club: ClubPr
                           </p>
                           <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
                             <span className="inline-flex items-center gap-1 rounded-full border border-border/40 bg-background/70 px-2 py-0.5">
-                              <ClubLogo name={transfer.fromClub?.name ?? t.noClub} logoUrl={transfer.fromClub?.logoUrl ?? null} className="flex h-3.5 w-3.5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-2.5 w-2.5 text-muted-foreground" />
+                              <ClubLogo name={transfer.fromClub?.name ?? t.noClub} logoUrl={transfer.fromClub?.logoUrl ?? null} className="flex h-3.5 w-3.5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center" iconClassName="h-2.5 w-2.5 text-muted-foreground" />
                               <Link href={`/clubs/${transfer.fromClub.id}`} className="max-w-40 truncate transition-colors hover:text-foreground">
                                 {transfer.fromClub.name}
                               </Link>

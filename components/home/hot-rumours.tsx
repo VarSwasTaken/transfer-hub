@@ -75,14 +75,14 @@ export async function HotRumours() {
                   <div className="flex items-center gap-1 mt-0.5 text-xs text-muted-foreground">
                     {fromClub && (
                       <>
-                        <ClubLogo name={fromClub.name} logoUrl={fromClub.logoUrl} className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-3 w-3 text-muted-foreground" />
+                        <ClubLogo name={fromClub.name} logoUrl={fromClub.logoUrl} className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center" iconClassName="h-3 w-3 text-muted-foreground" />
                         <span>{fromClub.name}</span>
                       </>
                     )}
                     {fromClub && toClub && <ArrowRight className="h-3 w-3 shrink-0" />}
                     {toClub && (
                       <>
-                        <ClubLogo name={toClub.name} logoUrl={toClub.logoUrl} className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-3 w-3 text-muted-foreground" />
+                        <ClubLogo name={toClub.name} logoUrl={toClub.logoUrl} className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center" iconClassName="h-3 w-3 text-muted-foreground" />
                         <span>{toClub.name}</span>
                       </>
                     )}

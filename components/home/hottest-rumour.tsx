@@ -46,7 +46,7 @@ export async function HottestRumour() {
       </div>
       <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5">
         <div className="flex items-center gap-3">
-          <PlayerAvatar name={playerName} firstName={player?.firstName} lastName={player?.lastName} imageUrl={player?.imageUrl} tone="orange" className="flex h-14 w-10 items-center justify-center overflow-hidden rounded" />
+          <PlayerAvatar name={playerName} firstName={player?.firstName} lastName={player?.lastName} imageUrl={player?.imageUrl} tone="orange" className="flex h-12 w-9 items-center justify-center overflow-hidden rounded" imageClassName="h-full w-full object-cover object-center" />
           <div>
             <p className="text-xs text-orange-400 font-medium uppercase tracking-wider flex items-center gap-1">
               <Flame className="h-3 w-3" />
@@ -58,7 +58,7 @@ export async function HottestRumour() {
             <p className="text-sm text-muted-foreground flex items-center gap-1.5 flex-wrap mt-1">
               <span>{fromClubName}</span>
               <span>&middot;</span>
-              <span>{player ? positionLabelPL[player.position] ?? player.position : 'N/A'}</span>
+              <span>{player ? (positionLabelPL[player.position] ?? player.position) : 'N/A'}</span>
               <span>&middot;</span>
               <span>wiarygodność: {credibilityPercent}%</span>
             </p>

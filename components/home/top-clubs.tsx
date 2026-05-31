@@ -34,7 +34,7 @@ export async function TopClubs() {
           return (
             <Link key={c.id} href={`/clubs/${c.id}`} className="group flex items-center gap-3">
               <span className="w-5 text-xs font-bold text-muted-foreground text-right shrink-0">{i + 1}</span>
-              <ClubLogo name={c.name} logoUrl={c.logoUrl} className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-4 w-4 text-muted-foreground" />
+              <ClubLogo name={c.name} logoUrl={c.logoUrl} className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center" iconClassName="h-4 w-4 text-muted-foreground" />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium text-foreground group-hover:text-emerald-400 transition-colors truncate">{c.name}</span>
