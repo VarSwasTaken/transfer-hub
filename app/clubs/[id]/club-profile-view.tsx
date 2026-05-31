@@ -1,6 +1,4 @@
 'use client';
-
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Users, TrendingUp, TrendingDown, Minus, Activity, Flame, Shield } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -218,9 +216,9 @@ export function ClubProfileView({ club, initialLanguage = 'pl' }: { club: ClubPr
     <main className="mx-auto max-w-7xl px-4 py-8">
       <div className="mb-8 rounded-xl border border-border/40 bg-card/50 p-6">
         <div className="flex flex-col items-start gap-6 sm:flex-row">
-          <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-xl bg-muted">
+          <div className="h-28 w-28 shrink-0 overflow-hidden rounded-xl bg-muted">
             {logoSrc ? (
-              <Image src={logoSrc} alt={club.name} fill className="object-cover" />
+              <img src={logoSrc} alt={club.name} className="object-cover h-full w-full" />
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-emerald-600 to-emerald-800 text-2xl font-bold text-white">
                 {club.name

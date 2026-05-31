@@ -36,7 +36,7 @@ export default async function TransferRumorsPage({ searchParams }: { searchParam
     }),
     prisma.club.findMany({
       where: { id: { in: clubIds } },
-      select: { id: true, name: true, shortName: true },
+      select: { id: true, name: true },
     }),
   ]);
 
@@ -49,7 +49,7 @@ export default async function TransferRumorsPage({ searchParams }: { searchParam
   const getClubName = (clubId?: number | null) => {
     if (!clubId) return '-';
     const c = clubs.find((cl) => cl.id === clubId);
-    return c ? c.shortName || c.name : `ID: ${clubId}`;
+    return c ? c.name : `ID: ${clubId}`;
   };
 
   return (
