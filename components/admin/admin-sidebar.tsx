@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Users, Trophy, Shield, Flag, UserRound, Home, FileText, ArrowRightLeft } from 'lucide-react';
+import { Users, Trophy, Shield, Flag, UserRound, Home, FileText, ArrowRightLeft, TrendingUp, Activity, MessageSquare } from 'lucide-react';
 
 import { logoutAction } from '@/app/admin/logout-action';
 
@@ -16,6 +16,10 @@ const navItems = [
   { name: 'Agenci', href: '/admin/agents', icon: UserRound },
   { name: 'Kontrakty', href: '/admin/contracts', icon: FileText },
   { name: 'Transfery', href: '/admin/transfers', icon: ArrowRightLeft },
+  { name: 'Plotki', href: '/admin/transfer-rumors', icon: MessageSquare },
+  { name: 'Wyceny Zawodników', href: '/admin/player-valuations', icon: TrendingUp },
+  { name: 'Wyceny Klubów', href: '/admin/club-valuations', icon: TrendingUp },
+  { name: 'Kontuzje', href: '/admin/injuries', icon: Activity },
 ];
 
 export function AdminSidebar() {
