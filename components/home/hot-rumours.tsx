@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { prisma } from '@/lib/prisma';
 import { listTransferRumors } from '@/lib/services/transfer-rumors';
+import { ClubLogo, PlayerAvatar } from '@/components/media/entity-media';
 
 function ReliabilityBar({ value: credibility }: { value: string }) {
   const numValue = credibility === 'High' ? 85 : credibility === 'Low' ? 40 : 65;
@@ -61,18 +62,10 @@ export async function HotRumours() {
             const player = playerMap.get(r.playerId);
             const fromClub = r.fromClubId ? clubMap.get(r.fromClubId) : null;
             const toClub = r.toClubId ? clubMap.get(r.toClubId) : null;
-            const playerFlag = player?.nationality?.flagUrl || '';
 
             return (
               <Link key={r.id} href={`/players/${r.playerId}`} className="flex items-center gap-3 px-6 py-3.5 hover:bg-muted/30 transition-colors group">
-                <div className="flex h-12 w-9 shrink-0 items-center justify-center rounded overflow-hidden">
-                  {player?.imageUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={player.imageUrl} alt={`${player.firstName} ${player.lastName}`} className="h-full w-full object-contain" />
-                  ) : (
-                    <div className="h-full w-full bg-linear-to-br from-orange-600 to-orange-800 text-white text-xs font-bold flex items-center justify-center">{player ? `${player.firstName[0]}${player.lastName[0]}`.toUpperCase() : '??'}</div>
-                  )}
-                </div>
+                <PlayerAvatar firstName={player?.firstName} lastName={player?.lastName} name={player ? `${player.firstName} ${player.lastName}` : `Zawodnik #${r.playerId}`} imageUrl={player?.imageUrl} tone="orange" className="flex h-12 w-9 shrink-0 items-center justify-center overflow-hidden rounded" imageClassName="h-full w-full object-cover" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium text-foreground group-hover:text-emerald-400 transition-colors truncate">{player ? `${player.firstName} ${player.lastName}` : `Zawodnik #${r.playerId}`}</span>
@@ -81,24 +74,14 @@ export async function HotRumours() {
                   <div className="flex items-center gap-1 mt-0.5 text-xs text-muted-foreground">
                     {fromClub && (
                       <>
-                        {fromClub.logoUrl && (
-                          <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded overflow-hidden">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={fromClub.logoUrl} alt={fromClub.name} className="h-full w-full object-contain" />
-                          </div>
-                        )}
+                        <ClubLogo name={fromClub.name} logoUrl={fromClub.logoUrl} className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-3 w-3 text-muted-foreground" />
                         <span>{fromClub.name}</span>
                       </>
                     )}
                     {fromClub && toClub && <ArrowRight className="h-3 w-3 shrink-0" />}
                     {toClub && (
                       <>
-                        {toClub.logoUrl && (
-                          <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded overflow-hidden">
-                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={toClub.logoUrl} alt={toClub.name} className="h-full w-full object-contain" />
-                          </div>
-                        )}
+                        <ClubLogo name={toClub.name} logoUrl={toClub.logoUrl} className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-3 w-3 text-muted-foreground" />
                         <span>{toClub.name}</span>
                       </>
                     )}

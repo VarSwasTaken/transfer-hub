@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { listInjuries } from '@/lib/services/injuries';
 import { prisma } from '@/lib/prisma';
+import { PlayerAvatar } from '@/components/media/entity-media';
 
 export async function InjuredPlayers() {
   const { items } = await listInjuries({ page: 1, limit: 5 });
@@ -57,14 +58,7 @@ export async function InjuredPlayers() {
 
             return (
               <Link key={p.id} href={`/players/${p.playerId}`} className="flex items-center gap-3 px-6 py-3 hover:bg-muted/30 transition-colors group">
-                <div className="flex h-12 w-9 shrink-0 items-center justify-center rounded overflow-hidden">
-                  {player?.imageUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={player.imageUrl} alt={`${player.firstName} ${player.lastName}`} className="h-full w-full object-cover" />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-rose-700 to-rose-900 text-white text-xs font-bold">{player ? `${player.firstName[0]}${player.lastName[0]}`.toUpperCase() : '??'}</div>
-                  )}
-                </div>
+                <PlayerAvatar firstName={player?.firstName} lastName={player?.lastName} name={player ? `${player.firstName} ${player.lastName}` : `Zawodnik #${p.playerId}`} imageUrl={player?.imageUrl} className="flex h-12 w-9 shrink-0 items-center justify-center overflow-hidden rounded" imageClassName="h-full w-full object-cover" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5">
                     <span className="text-sm font-medium text-foreground group-hover:text-emerald-400 transition-colors truncate">{player ? `${player.firstName} ${player.lastName}` : `Zawodnik #${p.playerId}`}</span>

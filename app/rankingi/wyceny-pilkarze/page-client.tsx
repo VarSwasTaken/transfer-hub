@@ -7,9 +7,9 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { normalizeLanguage, getTranslations, type Language } from '@/lib/i18n';
-import { Shield, ArrowLeft, ArrowRight, Filter, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Filter, X } from 'lucide-react';
+import { ClubLogo, PlayerAvatar } from '@/components/media/entity-media';
 
 import type { PlayerValuationItem } from '@/lib/services/rankings';
 
@@ -195,14 +195,7 @@ export default function PlayerValuationsPage() {
                       <td className="px-4 py-3 font-semibold text-emerald-400">{player.rank}</td>
                       <td className="px-4 py-3">
                         <Link href={`/players/${player.id}`} className="flex items-center gap-2 group text-sm hover:text-emerald-400 transition-colors">
-                          <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-linear-to-br from-emerald-600 to-emerald-800 text-xs font-bold text-white shrink-0">
-                            {player.imageUrl ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img src={player.imageUrl} alt={`${player.firstName} ${player.lastName}`} className="h-full w-full object-cover" />
-                            ) : (
-                              `${player.firstName?.[0] ?? ''}${player.lastName?.[0] ?? ''}`.toUpperCase()
-                            )}
-                          </div>
+                          <PlayerAvatar firstName={player.firstName} lastName={player.lastName} imageUrl={player.imageUrl} className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg" imageClassName="h-full w-full object-cover object-center" />
                           <span className="truncate group-hover:underline">
                             {player.firstName} {player.lastName}
                           </span>
@@ -212,14 +205,7 @@ export default function PlayerValuationsPage() {
                       <td className="px-4 py-3">
                         {player.club ? (
                           <Link href={`/clubs/${player.club.id}`} className="flex items-center gap-2 group text-sm text-foreground hover:text-emerald-400 transition-colors">
-                            {player.club.logoUrl ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img src={player.club.logoUrl} alt={player.club.name} className="h-5 w-5 rounded-full object-cover shrink-0" />
-                            ) : (
-                              <div className="h-5 w-5 rounded-full bg-muted flex items-center justify-center shrink-0">
-                                <Shield className="h-3 w-3 text-muted-foreground" />
-                              </div>
-                            )}
+                            <ClubLogo name={player.club.name} logoUrl={player.club.logoUrl} className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-3 w-3 text-muted-foreground" />
                             <span className="truncate group-hover:underline">{player.club.name}</span>
                           </Link>
                         ) : (

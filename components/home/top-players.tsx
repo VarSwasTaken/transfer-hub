@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { getTopPlayers } from '@/lib/services/rankings';
+import { PlayerAvatar } from '@/components/media/entity-media';
 
 export async function TopPlayers() {
   const result = await getTopPlayers({ page: 1, limit: 5 });
@@ -52,14 +53,7 @@ export async function TopPlayers() {
           return (
             <Link key={p.id} href={`/players/${p.id}`} className="group flex items-center gap-3">
               <span className="w-5 text-xs font-bold text-muted-foreground text-right shrink-0">{i + 1}</span>
-              <div className="flex h-12 w-9 shrink-0 items-center justify-center rounded overflow-hidden">
-                {p.imageUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={p.imageUrl} alt={`${p.firstName} ${p.lastName}`} className="h-full w-full object-contain" />
-                ) : (
-                  <div className="h-full w-full bg-linear-to-br from-amber-600 to-amber-800 text-white text-xs font-bold flex items-center justify-center">{`${p.firstName[0]}${p.lastName[0]}`.toUpperCase()}</div>
-                )}
-              </div>
+              <PlayerAvatar firstName={p.firstName} lastName={p.lastName} imageUrl={p.imageUrl} tone="orange" className="flex h-12 w-9 shrink-0 items-center justify-center overflow-hidden rounded" imageClassName="h-full w-full object-cover" />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium text-foreground group-hover:text-emerald-400 transition-colors truncate">

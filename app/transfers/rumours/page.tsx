@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight, TrendingUp } from 'lucide-react';
+import { PlayerAvatar } from '@/components/media/entity-media';
 
 import { prisma } from '@/lib/prisma';
 import { listTransferRumors, type TransferRumorDto } from '@/lib/services/transfer-rumors';
@@ -170,14 +171,7 @@ export default async function TransferRumoursPage({ searchParams }: PageParams) 
                       <tr key={rumor.id} className="hover:bg-emerald-500/5 transition-colors">
                         <td className="px-4 py-3">
                           <Link href={`/players/${rumor.playerId}`} className="flex items-center gap-2 group">
-                            <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-linear-to-br from-orange-600 to-orange-800 text-xs font-bold text-white shrink-0">
-                              {player?.imageUrl ? (
-                                // eslint-disable-next-line @next/next/no-img-element
-                                <img src={player.imageUrl} alt={`${player.firstName} ${player.lastName}`} className="h-full w-full object-cover" />
-                              ) : (
-                                `${player?.firstName?.[0] ?? ''}${player?.lastName?.[0] ?? ''}`.toUpperCase() || '??'
-                              )}
-                            </div>
+                            <PlayerAvatar name={player ? `${player.firstName} ${player.lastName}` : `Zawodnik #${rumor.playerId}`} firstName={player?.firstName} lastName={player?.lastName} imageUrl={player?.imageUrl} tone="orange" className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg" imageClassName="h-full w-full object-cover object-center" />
                             <div className="min-w-0">
                               <div className="text-sm font-semibold text-foreground group-hover:text-emerald-400 transition-colors truncate">{player ? `${player.firstName} ${player.lastName}` : `Zawodnik #${rumor.playerId}`}</div>
                               <div className="text-xs text-muted-foreground">{player?.position ?? 'N/A'}</div>

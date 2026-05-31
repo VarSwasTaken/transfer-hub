@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getTransfersList } from '@/lib/services/transfers-list';
+import { ClubLogo, PlayerAvatar } from '@/components/media/entity-media';
 
 export async function RecentTransfers() {
   const result = await getTransfersList({ page: 1, limit: 5 });
@@ -47,22 +48,7 @@ export async function RecentTransfers() {
         <div className="divide-y divide-border/30">
           {result.data.map((t) => (
             <Link key={t.id} href={`/players/${t.playerId}`} className="flex items-center gap-3 px-6 py-3.5 transition-colors hover:bg-muted/30 group">
-              {/* Player initials */}
-              <div className="flex h-12 w-9 shrink-0 items-center justify-center rounded overflow-hidden">
-                {t.playerImageUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={t.playerImageUrl} alt={t.playerName} className="h-full w-full object-cover" />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-emerald-600 to-emerald-800 text-white text-xs font-bold">
-                    {t.playerName
-                      .split(' ')
-                      .map((n) => n[0])
-                      .join('')
-                      .slice(0, 2)
-                      .toUpperCase()}
-                  </div>
-                )}
-              </div>
+              <PlayerAvatar name={t.playerName} imageUrl={t.playerImageUrl} className="flex h-12 w-9 shrink-0 items-center justify-center overflow-hidden rounded" imageClassName="h-full w-full object-cover" />
 
               {/* Player info */}
               <div className="flex-1 min-w-0">
@@ -72,12 +58,12 @@ export async function RecentTransfers() {
                 </div>
                 <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
                   <div className="flex items-center gap-1 min-w-0">
-                    {t.fromClubLogoUrl && <img src={t.fromClubLogoUrl} alt="" className="h-3.5 w-3.5 object-contain shrink-0" />}
+                    <ClubLogo name={t.fromClubName || 'Bez klubu'} logoUrl={t.fromClubLogoUrl} className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center" iconClassName="h-3 w-3 text-muted-foreground" />
                     <span className="truncate">{t.fromClubName || 'Bez klubu'}</span>
                   </div>
-                  <ArrowRight className="h-3 w-3 shrink-0 mx-0.5" />
+                  <ArrowRight className="h-3 w-3 shrink-0" />
                   <div className="flex items-center gap-1 min-w-0">
-                    {t.toClubLogoUrl && <img src={t.toClubLogoUrl} alt="" className="h-3.5 w-3.5 object-contain shrink-0" />}
+                    <ClubLogo name={t.toClubName} logoUrl={t.toClubLogoUrl} className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center" iconClassName="h-3 w-3 text-muted-foreground" />
                     <span className="truncate">{t.toClubName}</span>
                   </div>
                 </div>

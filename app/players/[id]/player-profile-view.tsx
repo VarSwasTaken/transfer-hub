@@ -1,12 +1,12 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Activity, TrendingUp, TrendingDown, Minus, Shield } from 'lucide-react';
+import { ArrowRight, Activity, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ValueChart } from '@/components/player/value-chart';
+import { ClubLogo, PlayerAvatar } from '@/components/media/entity-media';
 import { normalizeLanguage, pickLocalizedName, getTranslations, type Language } from '@/lib/i18n';
 
 type Trend = 'up' | 'down' | 'neutral';
@@ -141,19 +141,13 @@ function TrendIcon({ trend }: { trend: Trend }) {
 }
 
 export function PlayerProfileView({ player }: { player: PlayerProfileData | null }) {
-  const [language, setLanguage] = useState<Language>('pl');
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
+  const [language, setLanguage] = useState<Language>(() => {
     const stored = typeof window !== 'undefined' ? localStorage.getItem('ui-language') : null;
-    const normalized = normalizeLanguage(stored);
-    setLanguage(normalized);
-    setMounted(true);
-  }, []);
+    return normalizeLanguage(stored);
+  });
 
   // Listen for language changes from navbar
   useEffect(() => {
-    if (!mounted) return;
     const handleLanguageChange = () => {
       const stored = localStorage.getItem('ui-language');
       const normalized = normalizeLanguage(stored);
@@ -161,9 +155,9 @@ export function PlayerProfileView({ player }: { player: PlayerProfileData | null
     };
     window.addEventListener('language-changed', handleLanguageChange);
     return () => window.removeEventListener('language-changed', handleLanguageChange);
-  }, [mounted]);
+  }, []);
 
-  if (!player || !mounted) {
+  if (!player) {
     return null;
   }
 
@@ -177,25 +171,12 @@ export function PlayerProfileView({ player }: { player: PlayerProfileData | null
   const marketValue = formatMarketValue(player.marketValue, language);
   const contractEnd = player.contracts[0]?.endDate ? formatMonthYear(player.contracts[0].endDate, language) : t.noData;
   const avatarSrc = player.imageUrl?.trim() || null;
-  const avatarIsExternal = avatarSrc ? /^https?:\/\//i.test(avatarSrc) : false;
-  const initials = `${player.firstName?.[0] ?? ''}${player.lastName?.[0] ?? ''}`.toUpperCase() || '??';
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
       <div className="mb-8 rounded-xl border border-border/40 bg-card/50 p-6">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
-          <div className="relative flex aspect-300/390 w-30 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-linear-to-br from-emerald-600 to-emerald-800 text-3xl font-extrabold text-white shadow-lg shadow-emerald-900/30">
-            {avatarSrc ? (
-              avatarIsExternal ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={avatarSrc} alt={name} className="h-full w-full object-cover object-center" />
-              ) : (
-                <Image src={avatarSrc} alt={name} fill className="object-cover object-center" />
-              )
-            ) : (
-              initials
-            )}
-          </div>
+          <PlayerAvatar name={name} firstName={player.firstName} lastName={player.lastName} imageUrl={avatarSrc} className="flex aspect-300/390 w-30 shrink-0 items-center justify-center overflow-hidden rounded-xl text-3xl font-extrabold text-white shadow-lg shadow-emerald-900/30" imageClassName="h-full w-full object-cover object-center" />
 
           <div className="min-w-0 flex-1">
             <div className="mb-2 flex flex-wrap items-center gap-2">
@@ -234,14 +215,7 @@ export function PlayerProfileView({ player }: { player: PlayerProfileData | null
                 <p className="mb-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">{t.currentClub}</p>
                 {player.club ? (
                   <div className="flex items-center gap-2">
-                    {player.club.logoUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={player.club.logoUrl} alt={`${player.club.name} logo`} className="h-5 w-5 shrink-0 rounded-full object-cover" />
-                    ) : (
-                      <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
-                        <Shield className="h-3.5 w-3.5" />
-                      </span>
-                    )}
+                    <ClubLogo name={player.club.name} logoUrl={player.club.logoUrl} className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-3.5 w-3.5 text-muted-foreground" />
                     <Link href={`/clubs/${player.club.id}`} className="text-base font-bold text-foreground transition-colors hover:text-emerald-400">
                       {player.club.name}
                     </Link>
@@ -316,14 +290,7 @@ export function PlayerProfileView({ player }: { player: PlayerProfileData | null
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-1.5 text-sm">
                           <span className="inline-flex items-center gap-1.5 text-muted-foreground">
-                            {transfer.fromClub?.logoUrl ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img src={transfer.fromClub.logoUrl} alt={`${transfer.fromClub.name} logo`} className="h-4 w-4 shrink-0 rounded-full object-cover" />
-                            ) : (
-                              <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
-                                <Shield className="h-2.5 w-2.5" />
-                              </span>
-                            )}
+                            <ClubLogo name={transfer.fromClub?.name ?? t.noFromClub} logoUrl={transfer.fromClub?.logoUrl ?? null} className="flex h-4 w-4 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-2.5 w-2.5 text-muted-foreground" />
                             {transfer.fromClub ? (
                               <Link href={`/clubs/${transfer.fromClub.id}`} className="transition-colors hover:text-emerald-400">
                                 {transfer.fromClub.name}
@@ -334,14 +301,7 @@ export function PlayerProfileView({ player }: { player: PlayerProfileData | null
                           </span>
                           <ArrowRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                           <span className="inline-flex items-center gap-1.5 font-medium text-foreground">
-                            {transfer.toClub.logoUrl ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img src={transfer.toClub.logoUrl} alt={`${transfer.toClub.name} logo`} className="h-4 w-4 shrink-0 rounded-full object-cover" />
-                            ) : (
-                              <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
-                                <Shield className="h-2.5 w-2.5" />
-                              </span>
-                            )}
+                            <ClubLogo name={transfer.toClub.name} logoUrl={transfer.toClub.logoUrl} className="flex h-4 w-4 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-2.5 w-2.5 text-muted-foreground" />
                             <Link href={`/clubs/${transfer.toClub.id}`} className="transition-colors hover:text-emerald-400">
                               {transfer.toClub.name}
                             </Link>

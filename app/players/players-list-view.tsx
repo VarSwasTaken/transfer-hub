@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, ArrowRight, Search, Filter, X, Shield } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Search, Filter, X } from 'lucide-react';
 import { normalizeLanguage, type Language } from '@/lib/i18n';
 import { useEffect } from 'react';
+import { ClubLogo, PlayerAvatar } from '@/components/media/entity-media';
 
 type PlayerListItem = {
   id: number;
@@ -347,7 +348,7 @@ export function PlayersListView({ players, meta }: { players: PlayerListItem[]; 
                     <tr key={player.id} className="border-b border-border/20 hover:bg-muted/30 transition-colors">
                       <td className="px-4 py-3">
                         <Link href={`/players/${player.id}`} className="flex items-center gap-3 group">
-                          <div className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg bg-linear-to-br from-emerald-600 to-emerald-800 text-xs font-bold text-white shrink-0">{player.imageUrl ? <img src={player.imageUrl} alt={`${player.firstName} ${player.lastName}`} className="h-full w-full object-cover object-center" /> : getInitials(player.firstName, player.lastName)}</div>
+                          <PlayerAvatar firstName={player.firstName} lastName={player.lastName} imageUrl={player.imageUrl} className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg" imageClassName="h-full w-full object-cover object-center" />
                           <div className="min-w-0 flex-1">
                             <p className="font-medium text-foreground group-hover:text-emerald-400 transition-colors truncate">
                               {player.firstName} {player.lastName}
@@ -365,13 +366,7 @@ export function PlayersListView({ players, meta }: { players: PlayerListItem[]; 
                       <td className="px-4 py-3">
                         {player.club ? (
                           <Link href={`/clubs/${player.club.id}`} className="flex items-center gap-2 group text-sm text-foreground hover:text-emerald-400 transition-colors">
-                            {player.club.logoUrl ? (
-                              <img src={player.club.logoUrl} alt={player.club.name} className="h-6 w-6 rounded object-cover shrink-0" />
-                            ) : (
-                              <div className="h-6 w-6 rounded bg-muted flex items-center justify-center shrink-0">
-                                <Shield className="h-4 w-4 text-muted-foreground" />
-                              </div>
-                            )}
+                            <ClubLogo name={player.club.name} logoUrl={player.club.logoUrl} className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-3.5 w-3.5 text-muted-foreground" />
                             <span className="truncate group-hover:underline">{player.club.name}</span>
                           </Link>
                         ) : (

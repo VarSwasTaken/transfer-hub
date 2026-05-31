@@ -2,8 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { ClubLogo } from '@/components/media/entity-media';
 
 type LeagueProfileData = {
   id: number;
@@ -71,7 +71,7 @@ export function LeagueProfileView({ league }: { league: LeagueProfileData }) {
                 <h1 className="text-2xl md:text-3xl font-bold text-foreground">{league.name}</h1>
                 {league.nationality && (
                   <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-muted/50 border border-border/30">
-                    {league.nationality.flagUrl && <img src={league.nationality.flagUrl} alt={league.nationality.name} className="w-5 h-3 rounded-sm object-cover" />}
+                    {league.nationality.flagUrl && <Image src={league.nationality.flagUrl} alt={league.nationality.name} width={20} height={12} className="w-5 h-3 rounded-sm object-cover" />}
                     <span className="text-sm text-muted-foreground">{league.nationality.name}</span>
                   </div>
                 )}
@@ -111,7 +111,7 @@ export function LeagueProfileView({ league }: { league: LeagueProfileData }) {
                 <CardContent className="pt-6">
                   <div className="flex items-center gap-4">
                     {/* Club Logo */}
-                    <div className="relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted border border-border/30">{club.logoUrl ? <img src={club.logoUrl} alt={club.name} className="h-full w-full object-cover object-center" /> : <span className="text-sm font-bold text-muted-foreground">{club.name.substring(0, 2).toUpperCase()}</span>}</div>
+                    <ClubLogo name={club.name} logoUrl={club.logoUrl} className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted border border-border/30" imageClassName="h-full w-full object-contain object-center p-1.5" iconClassName="h-5 w-5 text-muted-foreground" />
 
                     {/* Club Info */}
                     <div className="flex-1 min-w-0">

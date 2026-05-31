@@ -8,8 +8,9 @@ import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { ClubLogo } from '@/components/media/entity-media';
 import { normalizeLanguage, getTranslations, type Language } from '@/lib/i18n';
-import { Shield, ArrowLeft, ArrowRight, Filter, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Filter, X } from 'lucide-react';
 
 import type { ClubValuationItem } from '@/lib/services/rankings';
 
@@ -106,14 +107,7 @@ export default function ClubValuationsPage() {
                       <td className="px-4 py-3 font-semibold text-emerald-400">{club.rank}</td>
                       <td className="px-4 py-3">
                         <Link href={`/clubs/${club.id}`} className="flex items-center gap-2 group text-sm hover:text-emerald-400 transition-colors">
-                          {club.logoUrl ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={club.logoUrl} alt={club.name} className="h-8 w-8 rounded-full object-cover shrink-0" />
-                          ) : (
-                            <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center shrink-0">
-                              <Shield className="h-4 w-4 text-muted-foreground" />
-                            </div>
-                          )}
+                          <ClubLogo name={club.name} logoUrl={club.logoUrl} className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-4 w-4 text-muted-foreground" />
                           <span className="truncate group-hover:underline">{club.name}</span>
                         </Link>
                       </td>

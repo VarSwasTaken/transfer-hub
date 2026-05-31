@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { getClubValuations } from '@/lib/services/rankings';
+import { ClubLogo } from '@/components/media/entity-media';
 
 export async function TopClubs() {
   const result = await getClubValuations({ page: 1, limit: 5 });
@@ -33,21 +34,7 @@ export async function TopClubs() {
           return (
             <Link key={c.id} href={`/clubs/${c.id}`} className="group flex items-center gap-3">
               <span className="w-5 text-xs font-bold text-muted-foreground text-right shrink-0">{i + 1}</span>
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full overflow-hidden">
-                {c.logoUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={c.logoUrl} alt={c.name} className="h-full w-full object-contain" />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-sky-600 to-sky-900 text-white text-xs font-bold">
-                    {c.name
-                      .split(' ')
-                      .map((n) => n[0])
-                      .join('')
-                      .slice(0, 2)
-                      .toUpperCase()}
-                  </div>
-                )}
-              </div>
+              <ClubLogo name={c.name} logoUrl={c.logoUrl} className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-4 w-4 text-muted-foreground" />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium text-foreground group-hover:text-emerald-400 transition-colors truncate">{c.name}</span>

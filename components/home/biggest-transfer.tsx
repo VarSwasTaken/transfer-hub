@@ -4,6 +4,7 @@ import { ArrowRight, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { prisma } from '@/lib/prisma';
+import { PlayerAvatar } from '@/components/media/entity-media';
 
 export async function BiggestTransfer() {
   // Pobierz największy transfer
@@ -35,7 +36,6 @@ export async function BiggestTransfer() {
 
   const player = transfer.player;
   const feeValue = transfer.fee ? `€ ${(Number(transfer.fee) / 1_000_000).toFixed(0)} mln` : 'Brak';
-  const playerInitials = `${player.firstName[0]}${player.lastName[0]}`.toUpperCase();
 
   return (
     <div className="rounded-xl overflow-hidden border border-emerald-500/20 bg-linear-to-r from-emerald-950/60 to-card/60 relative">
@@ -44,14 +44,7 @@ export async function BiggestTransfer() {
       </div>
       <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5">
         <div className="flex items-center gap-3">
-          <div className="flex h-14 w-10 shrink-0 items-center justify-center rounded bg-linear-to-br from-emerald-600 to-emerald-800 text-white text-xs font-bold overflow-hidden">
-            {player.imageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={player.imageUrl} alt={`${player.firstName} ${player.lastName}`} className="h-full w-full object-cover" />
-            ) : (
-              playerInitials
-            )}
-          </div>
+          <PlayerAvatar firstName={player.firstName} lastName={player.lastName} imageUrl={player.imageUrl} className="flex h-14 w-10 shrink-0 items-center justify-center overflow-hidden rounded" />
           <div>
             <p className="text-xs text-emerald-400 font-medium uppercase tracking-wider flex items-center gap-1">
               <TrendingUp className="h-3 w-3" />

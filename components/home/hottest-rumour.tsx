@@ -4,6 +4,7 @@ import { ArrowRight, Flame } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { prisma } from '@/lib/prisma';
 import { listTransferRumors } from '@/lib/services/transfer-rumors';
+import { PlayerAvatar } from '@/components/media/entity-media';
 
 export async function HottestRumour() {
   const { items } = await listTransferRumors({ page: 1, limit: 1 });
@@ -38,14 +39,7 @@ export async function HottestRumour() {
       </div>
       <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5">
         <div className="flex items-center gap-3">
-          <div className="flex h-14 w-10 items-center justify-center rounded bg-orange-500 text-white font-bold text-sm shrink-0 overflow-hidden">
-            {player?.imageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={player.imageUrl} alt={playerName} className="h-full w-full object-cover" />
-            ) : (
-              playerInitials
-            )}
-          </div>
+          <PlayerAvatar name={playerName} firstName={player?.firstName} lastName={player?.lastName} imageUrl={player?.imageUrl} tone="orange" className="flex h-14 w-10 items-center justify-center overflow-hidden rounded" />
           <div>
             <p className="text-xs text-orange-400 font-medium uppercase tracking-wider flex items-center gap-1">
               <Flame className="h-3 w-3" />

@@ -4,6 +4,7 @@ import { ArrowRight, Users, TrendingUp, TrendingDown, Minus, Activity, Flame, Sh
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { ClubLogo, PlayerAvatar } from '@/components/media/entity-media';
 import { SquadValueChart } from '@/components/club/squad-value-chart';
 import { normalizeLanguage, pickLocalizedName, getTranslations, type Language } from '@/lib/i18n';
 
@@ -146,6 +147,33 @@ function TrendIcon({ trend }: { trend: Trend }) {
   return <Minus className="h-3.5 w-3.5 text-muted-foreground" />;
 }
 
+const playerToneByPosition = {
+  GOALKEEPER: 'violet',
+  DEFENDER: 'orange',
+  MIDFIELDER: 'sky',
+  FORWARD: 'emerald',
+} as const;
+
+// Dodana mapa klas tekstowych dla poszczególnych pozycji
+const textToneByPosition = {
+  GOALKEEPER: {
+    text: 'text-violet-400',
+    hover: 'group-hover:text-violet-400',
+  },
+  DEFENDER: {
+    text: 'text-orange-400',
+    hover: 'group-hover:text-orange-400',
+  },
+  MIDFIELDER: {
+    text: 'text-sky-400',
+    hover: 'group-hover:text-sky-400',
+  },
+  FORWARD: {
+    text: 'text-emerald-400',
+    hover: 'group-hover:text-emerald-400',
+  },
+} as const;
+
 export function ClubProfileView({ club, initialLanguage = 'pl' }: { club: ClubProfileData | null; initialLanguage?: Language }) {
   const [language, setLanguage] = useState<Language>(initialLanguage);
 
@@ -216,20 +244,7 @@ export function ClubProfileView({ club, initialLanguage = 'pl' }: { club: ClubPr
     <main className="mx-auto max-w-7xl px-4 py-8">
       <div className="mb-8 rounded-xl border border-border/40 bg-card/50 p-6">
         <div className="flex flex-col items-start gap-6 sm:flex-row">
-          <div className="h-28 w-28 shrink-0 overflow-hidden rounded-xl bg-muted">
-            {logoSrc ? (
-              <img src={logoSrc} alt={club.name} className="object-cover h-full w-full" />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-emerald-600 to-emerald-800 text-2xl font-bold text-white">
-                {club.name
-                  .split(' ')
-                  .map((part) => part[0])
-                  .join('')
-                  .slice(0, 2)
-                  .toUpperCase()}
-              </div>
-            )}
-          </div>
+          <ClubLogo name={club.name} logoUrl={logoSrc} className="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-2" iconClassName="h-10 w-10 text-muted-foreground" />
 
           <div className="min-w-0 flex-1">
             <div className="mb-1 flex flex-wrap items-center gap-2">
@@ -340,20 +355,15 @@ export function ClubProfileView({ club, initialLanguage = 'pl' }: { club: ClubPr
                       <div className="divide-y divide-border/30">
                         {section.players.map((player) => {
                           const playerName = `${player.firstName} ${player.lastName}`.trim();
+                          const textClasses = textToneByPosition[player.position];
 
                           return (
                             <Link key={player.id} href={`/players/${player.id}`} className="group flex items-center gap-4 px-4 py-3 transition-colors hover:bg-muted/30">
-                              <span className="w-9 shrink-0 text-right text-xs font-bold text-emerald-400">#{player.shirtNumber}</span>
-                              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-sky-600 to-sky-900 text-xs font-bold text-white">
-                                {playerName
-                                  .split(' ')
-                                  .map((n) => n[0])
-                                  .join('')
-                                  .slice(0, 2)}
-                              </div>
+                              <span className={`w-9 shrink-0 text-right text-xs font-bold ${textClasses.text}`}>#{player.shirtNumber}</span>
+                              <PlayerAvatar name={playerName} firstName={player.firstName} lastName={player.lastName} imageUrl={player.imageUrl} tone={playerToneByPosition[player.position]} className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full text-xs font-bold text-white" imageClassName="h-full w-full object-cover object-center" />
                               <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-2">
-                                  <span className="truncate text-sm font-medium text-foreground transition-colors group-hover:text-emerald-400">{playerName}</span>
+                                  <span className={`truncate text-sm font-medium text-foreground transition-colors ${textClasses.hover}`}>{playerName}</span>
                                   <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-[10px] font-bold text-muted-foreground">{t.positionLabels[player.position]}</span>
                                 </div>
                                 <div className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
@@ -367,8 +377,8 @@ export function ClubProfileView({ club, initialLanguage = 'pl' }: { club: ClubPr
                                 </div>
                               </div>
                               <div className="flex shrink-0 items-center gap-2">
-                                <span className="text-sm font-semibold text-emerald-400">{formatMoney(player.marketValue, language)}</span>
-                                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground transition-colors group-hover:text-emerald-400" />
+                                <span className={`text-sm font-semibold ${textClasses.text}`}>{formatMoney(player.marketValue, language)}</span>
+                                <ArrowRight className={`h-3.5 w-3.5 text-muted-foreground transition-colors ${textClasses.hover}`} />
                               </div>
                             </Link>
                           );
@@ -412,12 +422,7 @@ export function ClubProfileView({ club, initialLanguage = 'pl' }: { club: ClubPr
                           </p>
                           <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
                             <span className="inline-flex items-center gap-1 rounded-full border border-border/40 bg-background/70 px-2 py-0.5">
-                              {transfer.fromClub?.logoUrl ? (
-                                // eslint-disable-next-line @next/next/no-img-element
-                                <img src={transfer.fromClub.logoUrl} alt={transfer.fromClub.name} className="h-3.5 w-3.5 rounded-full object-cover" />
-                              ) : (
-                                <Shield className="h-3 w-3 text-muted-foreground" />
-                              )}
+                              <ClubLogo name={transfer.fromClub?.name ?? t.noClub} logoUrl={transfer.fromClub?.logoUrl ?? null} className="flex h-3.5 w-3.5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-2.5 w-2.5 text-muted-foreground" />
                               {transfer.fromClub ? (
                                 <Link href={`/clubs/${transfer.fromClub.id}`} className="max-w-40 truncate transition-colors hover:text-foreground">
                                   {transfer.fromClub.name}
@@ -428,12 +433,7 @@ export function ClubProfileView({ club, initialLanguage = 'pl' }: { club: ClubPr
                             </span>
                             <ArrowRight className="h-3 w-3 shrink-0" />
                             <span className="inline-flex items-center gap-1 rounded-full border border-border/40 bg-background/70 px-2 py-0.5">
-                              {transfer.toClub.logoUrl ? (
-                                // eslint-disable-next-line @next/next/no-img-element
-                                <img src={transfer.toClub.logoUrl} alt={transfer.toClub.name} className="h-3.5 w-3.5 rounded-full object-cover" />
-                              ) : (
-                                <Shield className="h-3 w-3 text-muted-foreground" />
-                              )}
+                              <ClubLogo name={transfer.toClub.name} logoUrl={transfer.toClub.logoUrl} className="flex h-3.5 w-3.5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-2.5 w-2.5 text-muted-foreground" />
                               <Link href={`/clubs/${transfer.toClub.id}`} className="max-w-40 truncate transition-colors hover:text-foreground">
                                 {transfer.toClub.name}
                               </Link>
@@ -484,24 +484,14 @@ export function ClubProfileView({ club, initialLanguage = 'pl' }: { club: ClubPr
                           </p>
                           <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
                             <span className="inline-flex items-center gap-1 rounded-full border border-border/40 bg-background/70 px-2 py-0.5">
-                              {transfer.fromClub?.logoUrl ? (
-                                // eslint-disable-next-line @next/next/no-img-element
-                                <img src={transfer.fromClub.logoUrl} alt={transfer.fromClub.name} className="h-3.5 w-3.5 rounded-full object-cover" />
-                              ) : (
-                                <Shield className="h-3 w-3 text-muted-foreground" />
-                              )}
+                              <ClubLogo name={transfer.fromClub?.name ?? t.noClub} logoUrl={transfer.fromClub?.logoUrl ?? null} className="flex h-3.5 w-3.5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-2.5 w-2.5 text-muted-foreground" />
                               <Link href={`/clubs/${transfer.fromClub.id}`} className="max-w-40 truncate transition-colors hover:text-foreground">
                                 {transfer.fromClub.name}
                               </Link>
                             </span>
                             <ArrowRight className="h-3 w-3 shrink-0" />
                             <span className="inline-flex items-center gap-1 rounded-full border border-border/40 bg-background/70 px-2 py-0.5">
-                              {transfer.toClub.logoUrl ? (
-                                // eslint-disable-next-line @next/next/no-img-element
-                                <img src={transfer.toClub.logoUrl} alt={transfer.toClub.name} className="h-3.5 w-3.5 rounded-full object-cover" />
-                              ) : (
-                                <Shield className="h-3 w-3 text-muted-foreground" />
-                              )}
+                              <ClubLogo name={transfer.toClub.name} logoUrl={transfer.toClub.logoUrl} className="flex h-3.5 w-3.5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-2.5 w-2.5 text-muted-foreground" />
                               <Link href={`/clubs/${transfer.toClub.id}`} className="max-w-40 truncate transition-colors hover:text-foreground">
                                 {transfer.toClub.name}
                               </Link>

@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Shield, ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ClubLogo, PlayerAvatar } from '@/components/media/entity-media';
 
 const POSITIONS: Record<string, { pl: string; en: string }> = {
   GOALKEEPER: { pl: 'Bramkarz', en: 'Goalkeeper' },
@@ -92,14 +93,7 @@ export default function TransfersClient({ windowStart, windowEnd }: TransfersCli
                     <tr key={transfer.id} className="hover:bg-emerald-500/5 transition-colors">
                       <td className="px-4 py-3">
                         <Link href={`/players/${transfer.playerId}`} className="flex items-center gap-2 group text-sm hover:text-emerald-400 transition-colors">
-                          <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-linear-to-br from-emerald-600 to-emerald-800 text-xs font-bold text-white shrink-0">
-                            {transfer.playerImageUrl ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img src={transfer.playerImageUrl} alt={transfer.playerName} className="h-full w-full object-cover" />
-                            ) : (
-                              `${transfer.playerName?.split(' ')[0]?.[0] ?? ''}${transfer.playerName?.split(' ')[1]?.[0] ?? ''}`.toUpperCase()
-                            )}
-                          </div>
+                          <PlayerAvatar name={transfer.playerName} imageUrl={transfer.playerImageUrl} className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg" imageClassName="h-full w-full object-cover object-center" />
                           <div className="flex flex-col">
                             <span className="truncate group-hover:underline font-medium">{transfer.playerName}</span>
                             {transfer.playerNationalityFlag && (
@@ -116,14 +110,7 @@ export default function TransfersClient({ windowStart, windowEnd }: TransfersCli
                       <td className="px-4 py-3">
                         {transfer.fromClubId ? (
                           <Link href={`/clubs/${transfer.fromClubId}`} className="flex items-center gap-2 group text-sm text-foreground hover:text-emerald-400 transition-colors">
-                            {transfer.fromClubLogoUrl ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img src={transfer.fromClubLogoUrl} alt={transfer.fromClubName} className="h-5 w-5 rounded-full object-cover shrink-0" />
-                            ) : (
-                              <div className="h-5 w-5 rounded-full bg-muted flex items-center justify-center shrink-0">
-                                <Shield className="h-3 w-3 text-muted-foreground" />
-                              </div>
-                            )}
+                            <ClubLogo name={transfer.fromClubName} logoUrl={transfer.fromClubLogoUrl} className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-3 w-3 text-muted-foreground" />
                             <span className="truncate group-hover:underline">{transfer.fromClubName}</span>
                           </Link>
                         ) : (
@@ -132,14 +119,7 @@ export default function TransfersClient({ windowStart, windowEnd }: TransfersCli
                       </td>
                       <td className="px-4 py-3">
                         <Link href={`/clubs/${transfer.toClubId}`} className="flex items-center gap-2 group text-sm text-foreground hover:text-emerald-400 transition-colors">
-                          {transfer.toClubLogoUrl ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={transfer.toClubLogoUrl} alt={transfer.toClubName} className="h-5 w-5 rounded-full object-cover shrink-0" />
-                          ) : (
-                            <div className="h-5 w-5 rounded-full bg-muted flex items-center justify-center shrink-0">
-                              <Shield className="h-3 w-3 text-muted-foreground" />
-                            </div>
-                          )}
+                          <ClubLogo name={transfer.toClubName} logoUrl={transfer.toClubLogoUrl} className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-none bg-muted" imageClassName="h-full w-full object-contain object-center p-0.5" iconClassName="h-3 w-3 text-muted-foreground" />
                           <span className="truncate group-hover:underline">{transfer.toClubName}</span>
                         </Link>
                       </td>
